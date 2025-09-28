@@ -1,3 +1,4 @@
+
 export type Category = 'general' | 'android-apps' | 'movie-apps' | 'sports-apps' | 'games';
 
 export interface Post {
@@ -16,7 +17,7 @@ export interface SiteSettings {
     logoUrl: string;
     announcementText: string;
     announcementLink?: string;
-    colors: {
+    colors?: {
         header: string;
         card: string;
         primary: string;

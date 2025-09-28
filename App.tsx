@@ -15,7 +15,7 @@ interface AppData {
   logoUrl: string;
   announcementText: string;
   announcementLink?: string;
-  colors: SiteSettings['colors'];
+  colors?: SiteSettings['colors'];
   socials?: SiteSettings['socials'];
 }
 
@@ -50,11 +50,12 @@ const App: React.FC = () => {
 
         if (data.colors) {
           const root = document.documentElement;
+          const primaryColor = data.colors.primary || '#ef4444';
           root.style.setProperty('--color-header-bg', data.colors.header || '#1f2937');
           root.style.setProperty('--color-card-bg', data.colors.card || 'rgba(31, 41, 55, 0.5)');
-          root.style.setProperty('--color-primary', data.colors.primary || '#ef4444');
-          root.style.setProperty('--color-primary-hover', `${data.colors.primary}CC` || '#dc2626');
-          root.style.setProperty('--color-primary-focus', `${data.colors.primary}B3` || '#f87171');
+          root.style.setProperty('--color-primary', primaryColor);
+          root.style.setProperty('--color-primary-hover', `${primaryColor}CC`);
+          root.style.setProperty('--color-primary-focus', `${primaryColor}B3`);
         }
 
       } catch (err) {
