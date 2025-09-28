@@ -30,7 +30,7 @@ const App: React.FC = () => {
     const fetchData = async () => {
       try {
         // Add a cache-busting query parameter
-        const response = await fetch(`/public/content.json?v=${new Date().getTime()}`);
+        const response = await fetch(`/content.json?v=${new Date().getTime()}`);
         if (!response.ok) {
           throw new Error(`خطأ في تحميل البيانات: ${response.statusText}`);
         }

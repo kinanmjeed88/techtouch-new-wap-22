@@ -1,3 +1,4 @@
+
 backend:
   name: git-gateway
   branch: main
@@ -7,7 +8,7 @@ backend:
 publish_mode: editorial_workflow
 
 media_folder: "public/uploads"
-public_folder: "/public/uploads"
+public_folder: "/uploads"
 
 collections:
   - name: "content"
@@ -36,24 +37,3 @@ collections:
               - { label: "YouTube", name: "youtube", widget: "string", required: false }
               - { label: "Telegram", name: "telegram", widget: "string", required: false }
           - label: "المنشورات"
-            name: "posts"
-            widget: "list"
-            summary: "{{fields.title}}"
-            fields:
-              - { label: "المعرف (ID)", name: "id", widget: "number" }
-              - { label: "العنوان", name: "title", widget: "string" }
-              - { label: "الوصف", name: "description", widget: "string" }
-              - { label: "الصورة", name: "imageUrl", widget: "image" }
-              - label: "التصنيف"
-                name: "category"
-                widget: "select"
-                options:
-                  - { label: "منشورات عامة", value: "general" }
-                  - { label: "تطبيقات أندرويد", value: "android-apps" }
-                  - { label: "تطبيقات أفلام", value: "movie-apps" }
-                  - { label: "تطبيقات رياضية", value: "sports-apps" }
-                  - { label: "الألعاب", value: "games" }
-              - { label: "المحتوى", name: "content", widget: "markdown" }
-              - { label: "رابط خارجي", name: "link", widget: "string" }
-              - { label: "رابط تحميل الملف", name: "fileUrl", widget: "string" }
-              - { label: "تاريخ النشر", name: "timestamp", widget: "datetime" }
