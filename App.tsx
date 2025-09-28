@@ -6,6 +6,8 @@ import PostDetail from './components/PostDetail';
 import Footer from './components/Footer';
 import FloatingButtons from './components/FloatingButtons';
 import PostCard from './components/PostCard';
+import Pagination from './components/Pagination';
+import SkeletonLoader from './components/SkeletonLoader';
 import type { Category, Post, SiteSettings } from './types';
 
 interface AppData {
@@ -17,6 +19,8 @@ interface AppData {
   socials: SiteSettings['socials'];
 }
 
+const POSTS_PER_PAGE = 6;
+
 const App: React.FC = () => {
   const [appData, setAppData] = useState<AppData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -25,11 +29,11 @@ const App: React.FC = () => {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<Category | 'all'>('all');
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Add a cache-busting query parameter
         const response = await fetch(`/content.json?v=${new Date().getTime()}`);
         if (!response.ok) {
           throw new Error(`خطأ في تحميل البيانات: ${response.statusText}`);
@@ -44,13 +48,11 @@ const App: React.FC = () => {
           socials: data.socials,
         });
 
-        // Apply theme colors
         if (data.colors) {
           const root = document.documentElement;
           root.style.setProperty('--color-header-bg', data.colors.header || '#1f2937');
           root.style.setProperty('--color-card-bg', data.colors.card || 'rgba(31, 41, 55, 0.5)');
           root.style.setProperty('--color-primary', data.colors.primary || '#ef4444');
-          // Simple hover color derivation
           root.style.setProperty('--color-primary-hover', `${data.colors.primary}CC` || '#dc2626');
           root.style.setProperty('--color-primary-focus', `${data.colors.primary}B3` || '#f87171');
         }
@@ -71,6 +73,16 @@ const App: React.FC = () => {
 
   const handleGoHome = () => {
     setSelectedPost(null);
+  };
+
+  const handleFilterChange = (category: Category | 'all') => {
+    setActiveCategory(category);
+    setCurrentPage(1);
+  };
+  
+  const handleSearchChange = (query: string) => {
+    setSearchQuery(query);
+    setCurrentPage(1);
   };
 
   const categories: { id: Category; title: string }[] = [
@@ -95,17 +107,24 @@ const App: React.FC = () => {
       post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       post.description.toLowerCase().includes(searchQuery.toLowerCase())
     ) || [];
-
-  if (loading) {
-    return <div className="flex items-center justify-center min-h-screen text-white text-2xl">...جاري التحميل</div>;
-  }
+  
+  const paginatedPosts = filteredPosts.slice(
+    (currentPage - 1) * POSTS_PER_PAGE,
+    currentPage * POSTS_PER_PAGE
+  );
 
   if (error) {
     return <div className="flex items-center justify-center min-h-screen text-red-500 text-2xl">حدث خطأ: {error}</div>;
   }
 
   if (!appData) {
-    return null;
+    return (
+       <div className="bg-gray-900 min-h-screen text-white">
+        <div className="container mx-auto px-4 py-8">
+          <SkeletonLoader />
+        </div>
+      </div>
+    );
   }
 
   const CategoryTabs = () => (
@@ -113,7 +132,7 @@ const App: React.FC = () => {
       <h3 className="text-2xl font-bold mb-4 text-white">التصنيفات</h3>
       <nav className="flex flex-wrap gap-3">
         <button
-          onClick={() => setActiveCategory('all')}
+          onClick={() => handleFilterChange('all')}
           className={`px-4 py-2 rounded-lg transition-all duration-300 text-lg font-medium ${
             activeCategory === 'all'
               ? 'bg-red-600 text-white shadow-md btn-primary'
@@ -125,7 +144,7 @@ const App: React.FC = () => {
         {categories.map((cat) => (
           <button
             key={cat.id}
-            onClick={() => setActiveCategory(cat.id)}
+            onClick={() => handleFilterChange(cat.id)}
             className={`px-4 py-2 rounded-lg transition-all duration-300 text-lg font-medium whitespace-nowrap ${
               activeCategory === cat.id
                 ? 'bg-red-600 text-white shadow-md btn-primary'
@@ -142,7 +161,7 @@ const App: React.FC = () => {
   return (
     <div className="bg-gray-900 min-h-screen text-white">
       <div className="container mx-auto px-4 py-8">
-        <Header onSearch={setSearchQuery} logoUrl={appData.logoUrl} />
+        <Header onSearch={handleSearchChange} logoUrl={appData.logoUrl} />
         <AnnouncementBar content={appData.announcementText} link={appData.announcementLink} />
 
         <main className="mt-8">
@@ -152,17 +171,26 @@ const App: React.FC = () => {
             <div>
               <CategoryTabs />
               
-              {filteredPosts.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {filteredPosts.map((post) => (
-                    <PostCard 
-                      key={post.id} 
-                      post={post} 
-                      onSelect={handleSelectPost}
-                      categoryTitle={categoryPostTitles[post.category]}
-                    />
-                  ))}
-                </div>
+              {loading ? <SkeletonLoader /> : filteredPosts.length > 0 ? (
+                <>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {paginatedPosts.map((post, index) => (
+                      <PostCard 
+                        key={post.id} 
+                        post={post} 
+                        onSelect={handleSelectPost}
+                        categoryTitle={categoryPostTitles[post.category]}
+                        index={index}
+                      />
+                    ))}
+                  </div>
+                  <Pagination 
+                    totalPosts={filteredPosts.length}
+                    postsPerPage={POSTS_PER_PAGE}
+                    currentPage={currentPage}
+                    onPageChange={setCurrentPage}
+                  />
+                </>
               ) : (
                 <div className="flex items-center justify-center h-64 bg-gray-800/50 rounded-lg">
                   <div className="text-center">

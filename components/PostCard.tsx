@@ -5,14 +5,18 @@ interface PostCardProps {
   post: Post;
   onSelect: (post: Post) => void;
   categoryTitle: string;
+  index: number;
 }
 
-const PostCard: React.FC<PostCardProps> = ({ post, onSelect, categoryTitle }) => {
+const PostCard: React.FC<PostCardProps> = ({ post, onSelect, categoryTitle, index }) => {
   return (
     <div
-      className="backdrop-blur-sm border border-gray-700 rounded-lg overflow-hidden shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer group border-primary-hover shadow-primary-hover"
+      className="backdrop-blur-sm border border-gray-700 rounded-lg overflow-hidden shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer group border-primary-hover shadow-primary-hover card-enter"
       onClick={() => onSelect(post)}
-      style={{ backgroundColor: 'var(--color-card-bg)'}}
+      style={{ 
+        backgroundColor: 'var(--color-card-bg)',
+        animationDelay: `${index * 100}ms`
+      }}
     >
       <div className="relative">
         <img src={post.imageUrl} alt={post.title} className="w-full h-48 object-cover" />
