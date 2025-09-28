@@ -37,3 +37,23 @@ collections:
               - { label: "YouTube", name: "youtube", widget: "string", required: false }
               - { label: "Telegram", name: "telegram", widget: "string", required: false }
           - label: "المنشورات"
+            name: "posts"
+            widget: "list"
+            fields:
+              - { label: "المعرف (ID)", name: "id", widget: "number" }
+              - { label: "العنوان", name: "title", widget: "string" }
+              - { label: "الوصف", name: "description", widget: "text" }
+              - { label: "المحتوى الكامل", name: "content", widget: "markdown" }
+              - { label: "صورة المنشور", name: "imageUrl", widget: "image" }
+              - { label: "التاريخ والوقت", name: "timestamp", widget: "datetime" }
+              - { label: "رابط خارجي", name: "link", widget: "string" }
+              - { label: "رابط تحميل الملف", name: "fileUrl", widget: "file" }
+              - label: "التصنيف"
+                name: "category"
+                widget: "select"
+                options:
+                  - { label: "منشور عام", value: "general" }
+                  - { label: "تطبيق أندرويد", value: "android-apps" }
+                  - { label: "تطبيق أفلام", value: "movie-apps" }
+                  - { label: "تطبيق رياضي", value: "sports-apps" }
+                  - { label: "لعبة", value: "games" }
