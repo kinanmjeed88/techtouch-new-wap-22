@@ -16,7 +16,7 @@ interface AppData {
   announcementText: string;
   announcementLink?: string;
   colors: SiteSettings['colors'];
-  socials: SiteSettings['socials'];
+  socials?: SiteSettings['socials'];
 }
 
 const POSTS_PER_PAGE = 6;

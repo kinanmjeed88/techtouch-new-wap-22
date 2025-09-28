@@ -1,22 +1,31 @@
+
 import React from 'react';
 import { FacebookIcon, TiktokIcon, YoutubeIcon, TelegramIcon } from './Icons';
 import type { SiteSettings } from '../types';
 
 interface FooterProps {
-  socials: SiteSettings['socials'];
+  socials?: SiteSettings['socials'];
 }
 
 const Footer: React.FC<FooterProps> = ({ socials }) => {
   const socialLinks = [
-    // FIX: Use optional chaining `?.` because the `socials` object can be undefined at runtime.
     { name: 'Facebook', icon: <FacebookIcon />, url: socials?.facebook },
-    // FIX: Use optional chaining `?.` because the `socials` object can be undefined at runtime.
     { name: 'TikTok', icon: <TiktokIcon />, url: socials?.tiktok },
-    // FIX: Use optional chaining `?.` because the `socials` object can be undefined at runtime.
     { name: 'YouTube', icon: <YoutubeIcon />, url: socials?.youtube },
-    // FIX: Use optional chaining `?.` because the `socials` object can be undefined at runtime.
     { name: 'Telegram', icon: <TelegramIcon />, url: socials?.telegram },
-  ].filter(link => link.url); // Filter out links that are not provided
+  ].filter(link => link.url);
+
+  if (socialLinks.length === 0) {
+    return (
+        <footer className="mt-12 py-8" style={{ backgroundColor: 'rgba(31, 41, 55, 0.5)' }}>
+            <div className="container mx-auto px-4 text-center">
+                <p className="text-gray-500 text-sm">
+                    &copy; {new Date().getFullYear()} <span dir="ltr">techtouch0</span>. جميع الحقوق محفوظة.
+                </p>
+            </div>
+        </footer>
+    );
+  }
 
   return (
     <footer className="mt-12 py-8" style={{ backgroundColor: 'rgba(31, 41, 55, 0.5)' }}>

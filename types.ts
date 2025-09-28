@@ -21,7 +21,7 @@ export interface SiteSettings {
         card: string;
         primary: string;
     };
-    socials: {
+    socials?: {
         facebook?: string;
         tiktok?: string;
         youtube?: string;
