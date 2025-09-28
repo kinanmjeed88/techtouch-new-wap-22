@@ -8,10 +8,14 @@ interface FooterProps {
 
 const Footer: React.FC<FooterProps> = ({ socials }) => {
   const socialLinks = [
-    { name: 'Facebook', icon: <FacebookIcon />, url: socials.facebook },
-    { name: 'TikTok', icon: <TiktokIcon />, url: socials.tiktok },
-    { name: 'YouTube', icon: <YoutubeIcon />, url: socials.youtube },
-    { name: 'Telegram', icon: <TelegramIcon />, url: socials.telegram },
+    // FIX: Use optional chaining `?.` because the `socials` object can be undefined at runtime.
+    { name: 'Facebook', icon: <FacebookIcon />, url: socials?.facebook },
+    // FIX: Use optional chaining `?.` because the `socials` object can be undefined at runtime.
+    { name: 'TikTok', icon: <TiktokIcon />, url: socials?.tiktok },
+    // FIX: Use optional chaining `?.` because the `socials` object can be undefined at runtime.
+    { name: 'YouTube', icon: <YoutubeIcon />, url: socials?.youtube },
+    // FIX: Use optional chaining `?.` because the `socials` object can be undefined at runtime.
+    { name: 'Telegram', icon: <TelegramIcon />, url: socials?.telegram },
   ].filter(link => link.url); // Filter out links that are not provided
 
   return (
