@@ -124,7 +124,7 @@ const AIChat: React.FC = () => {
             console.error("Error sending message:", err);
 
             if (isImageRequest) {
-                let errorText = '⚠️ عذراً، لم نتمكن من توليد الصورة. قد يكون الطلب غير واضح أو يخالف سياسات المحتوى. يرجى المحاولة بطلب مختلف.';
+                let errorText = '⚠️ فشل توليد الصورة. حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى بعد قليل.';
                 if (err instanceof Error) {
                     const lowerCaseError = err.message.toLowerCase();
                     if (lowerCaseError.includes('policy') || lowerCaseError.includes('safety')) {
