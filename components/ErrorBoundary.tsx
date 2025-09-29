@@ -29,7 +29,6 @@ class ErrorBoundary extends React.Component<Props, State> {
         <div className="bg-gray-900 min-h-screen text-white flex items-center justify-center p-4">
             <div className="text-center p-8 bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
                 <h1 className="text-3xl sm:text-4xl font-bold text-red-500 mb-4">حدث خطأ ما</h1>
-                {/* FIX: Corrected a typo in the Arabic error message. */}
                 <p className="text-gray-300 mb-6">نأسف، لقد واجه التطبيق مشكلة غير متوقعة.</p>
                 <button
                     onClick={() => window.location.reload()}

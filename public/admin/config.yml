@@ -17,17 +17,17 @@ collections:
             name: "identity"
             widget: "object"
             fields:
-              - { label: "شعار الموقع (الصورة الشخصية)", name: "logoUrl", widget: "image" }
-              - { label: "اسم الموقع", name: "siteName", widget: "string", default: "techtouch0" }
-              - { label: "نص الإعلان", name: "announcementText", widget: "string" }
+              - { label: "شعار الموقع (الصورة الشخصية)", name: "logoUrl", widget: "image", required: true }
+              - { label: "اسم الموقع", name: "siteName", widget: "string", default: "techtouch0", required: true }
+              - { label: "نص الإعلان", name: "announcementText", widget: "string", required: true }
               - { label: "رابط الإعلان (اختياري)", name: "announcementLink", widget: "string", required: false }
           - label: "ألوان الموقع"
             name: "colors"
             widget: "object"
             fields:
-              - { label: "خلفية الرأسية (Header)", name: "header", widget: "color" }
-              - { label: "خلفية البطاقات", name: "card", widget: "color" }
-              - { label: "اللون الرئيسي (للحواف والأزرار)", name: "primary", widget: "color" }
+              - { label: "خلفية الرأسية (Header)", name: "header", widget: "color", required: true }
+              - { label: "خلفية البطاقات", name: "card", widget: "color", required: true }
+              - { label: "اللون الرئيسي (للحواف والأزرار)", name: "primary", widget: "color", required: true }
           - label: "روابط التواصل الاجتماعي"
             name: "socials"
             widget: "object"
@@ -43,12 +43,12 @@ collections:
     create: true
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     fields:
-      - { label: "العنوان", name: "title", widget: "string" }
-      - { label: "الوصف", name: "description", widget: "text" }
-      - { label: "صورة المنشور", name: "imageUrl", widget: "image" }
-      - { label: "التاريخ والوقت", name: "timestamp", widget: "datetime" }
-      - { label: "رابط خارجي", name: "link", widget: "string" }
-      - { label: "رابط تحميل الملف", name: "fileUrl", widget: "file" }
+      - { label: "العنوان", name: "title", widget: "string", required: true }
+      - { label: "الوصف", name: "description", widget: "text", required: true }
+      - { label: "صورة المنشور", name: "imageUrl", widget: "image", required: true }
+      - { label: "التاريخ والوقت", name: "timestamp", widget: "datetime", required: true }
+      - { label: "رابط خارجي", name: "link", widget: "string", required: true }
+      - { label: "رابط تحميل الملف", name: "fileUrl", widget: "file", required: true }
       - label: "التصنيف"
         name: "category"
         widget: "select"
@@ -58,4 +58,5 @@ collections:
           - { label: "تطبيق أفلام", value: "movie-apps" }
           - { label: "تطبيق رياضي", value: "sports-apps" }
           - { label: "لعبة", value: "games" }
-      - { label: "اضافة نص فقط", name: "body", widget: "markdown" }
+        required: true
+      - { label: "اضافة نص فقط", name: "body", widget: "markdown", required: true }
