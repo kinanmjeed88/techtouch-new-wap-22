@@ -1,35 +1,33 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { LikeIcon, DislikeIcon, LoveIcon } from './Icons';
 
 type ReactionType = 'like' | 'dislike' | 'love';
 
-interface Reactions {
-  [postId: string]: {
-    counts: {
-      like: number;
-      dislike: number;
-      love: number;
-    };
-    userReaction: ReactionType | null;
-  };
+interface ReactionCounts {
+  like: number;
+  dislike: number;
+  love: number;
 }
 
-const getReactionsFromStorage = (): Reactions => {
+const getLocalUserReaction = (postId: number): ReactionType | null => {
   try {
-    const storedReactions = localStorage.getItem('post-reactions');
-    return storedReactions ? JSON.parse(storedReactions) : {};
-  } catch (error) {
-    console.error("Failed to parse reactions from localStorage", error);
-    return {};
+    const reactions = localStorage.getItem('user-post-reactions');
+    const parsed = reactions ? JSON.parse(reactions) : {};
+    return parsed[postId] || null;
+  } catch {
+    return null;
   }
 };
 
-const setReactionsToStorage = (reactions: Reactions) => {
+const setLocalUserReaction = (postId: number, reaction: ReactionType | null) => {
   try {
-    localStorage.setItem('post-reactions', JSON.stringify(reactions));
+    const reactions = localStorage.getItem('user-post-reactions');
+    const parsed = reactions ? JSON.parse(reactions) : {};
+    parsed[postId] = reaction;
+    localStorage.setItem('user-post-reactions', JSON.stringify(parsed));
   } catch (error) {
-    console.error("Failed to save reactions to localStorage", error);
+    console.error("Failed to save user reaction", error);
   }
 };
 
@@ -38,54 +36,106 @@ interface ReactionButtonsProps {
 }
 
 const ReactionButtons: React.FC<ReactionButtonsProps> = ({ postId }) => {
-  const [counts, setCounts] = useState({ like: 0, dislike: 0, love: 0 });
+  const [counts, setCounts] = useState<ReactionCounts | null>(null);
   const [userReaction, setUserReaction] = useState<ReactionType | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const allReactions = getReactionsFromStorage();
-    const postReactions = allReactions[postId];
-    if (postReactions) {
-      setCounts(postReactions.counts);
-      setUserReaction(postReactions.userReaction);
+  const fetchReactions = useCallback(async () => {
+    setError(null);
+    try {
+      const response = await fetch(`/.netlify/functions/reactions?postId=${postId}`);
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.statusText}`);
+      }
+      const data: ReactionCounts = await response.json();
+      setCounts(data);
+    } catch (err) {
+      console.error("Failed to fetch reactions:", err);
+      setError("فشل التحميل");
     }
   }, [postId]);
 
-  const handleReaction = (reaction: ReactionType) => {
-    let newCounts = { ...counts };
-    let newUserReaction: ReactionType | null = reaction;
+  useEffect(() => {
+    setUserReaction(getLocalUserReaction(postId));
+    fetchReactions();
+  }, [postId, fetchReactions]);
 
-    if (userReaction === reaction) {
+  const handleReaction = async (reaction: ReactionType) => {
+    if (!counts) return;
+
+    const oldReaction = userReaction;
+    const isTogglingOff = oldReaction === reaction;
+    const newReaction = isTogglingOff ? null : reaction;
+
+    const originalCounts = { ...counts };
+    const originalUserReaction = oldReaction;
+    
+    // Optimistic UI Update
+    const newCounts = { ...originalCounts };
+    let payload: { increment?: ReactionType; decrement?: ReactionType } = {};
+
+    if (isTogglingOff) {
       newCounts[reaction]--;
-      newUserReaction = null;
+      payload = { decrement: reaction };
     } else {
-      if (userReaction) {
-        newCounts[userReaction]--;
-      }
       newCounts[reaction]++;
+      payload.increment = reaction;
+      if (oldReaction) {
+        newCounts[oldReaction]--;
+        payload.decrement = oldReaction;
+      }
     }
     
     setCounts(newCounts);
-    setUserReaction(newUserReaction);
+    setUserReaction(newReaction);
+    setLocalUserReaction(postId, newReaction);
+    setError(null);
 
-    const allReactions = getReactionsFromStorage();
-    allReactions[postId] = {
-      counts: newCounts,
-      userReaction: newUserReaction,
-    };
-    setReactionsToStorage(allReactions);
+    // Sync with Server
+    try {
+      const response = await fetch(`/.netlify/functions/reactions?postId=${postId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update server');
+      }
+    } catch (err) {
+      console.error("Failed to sync reaction:", err);
+      // Revert UI on failure
+      setCounts(originalCounts);
+      setUserReaction(originalUserReaction);
+      setLocalUserReaction(postId, originalUserReaction);
+      setError("فشل التحديث");
+    }
   };
 
-  const reactionTypes: ReactionType[] = ['like', 'dislike', 'love'];
-  
   const reactionConfig: Record<ReactionType, { Icon: React.FC<any>, label: string }> = {
     like: { Icon: LikeIcon, label: 'أعجبني' },
     dislike: { Icon: DislikeIcon, label: 'لم يعجبني' },
     love: { Icon: LoveIcon, label: 'أحببته' },
   };
 
+  if (!counts) {
+    return (
+      <div className="flex items-center gap-x-3 sm:gap-x-4 h-6">
+        {error ? <span className="text-xs text-red-400">{error}</span> : 
+        <>
+          <div className="w-10 h-4 bg-gray-700 rounded skeleton-pulse"></div>
+          <div className="w-10 h-4 bg-gray-700 rounded skeleton-pulse"></div>
+          <div className="w-10 h-4 bg-gray-700 rounded skeleton-pulse"></div>
+        </>
+        }
+      </div>
+    );
+  }
+
   return (
     <div className="flex items-center gap-x-3 sm:gap-x-4" onClick={(e) => e.stopPropagation()}>
-      {reactionTypes.map((type) => {
+      {Object.keys(reactionConfig).map((key) => {
+        const type = key as ReactionType;
         const { Icon, label } = reactionConfig[type];
         const isSelected = userReaction === type;
 

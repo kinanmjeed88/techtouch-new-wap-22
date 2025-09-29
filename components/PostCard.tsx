@@ -51,7 +51,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onSelect, categoryTitle, inde
           style={{ color: 'var(--color-card-description)' }}
         >
           <ReactionButtons postId={post.id} />
-          <div className="flex items-center gap-x-1">
+          <div className="flex items-center">
             <EyeIcon className="w-4 h-4" />
           </div>
         </div>

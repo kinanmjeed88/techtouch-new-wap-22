@@ -80,7 +80,7 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, siteName }) => {
         <div className="flex items-center justify-between flex-wrap gap-4 text-gray-400 text-sm mb-6">
             <div className="flex items-center gap-x-4">
                 <span>{formattedDate}</span>
-                <div className="flex items-center gap-x-1.5">
+                <div className="flex items-center">
                     <EyeIcon className="w-5 h-5" />
                 </div>
             </div>
