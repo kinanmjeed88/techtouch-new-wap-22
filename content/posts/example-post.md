@@ -1,6 +1,9 @@
 ---
-title: تطبيق تحرير الصور الاحترافي
-description: أفضل تطبيق لتعديل الصور وإضافة فلاتر رائعة بكل سهولة.
+title: aistudio AI
+description: >-
+  Google AI Studio
+
+  هي منصة تجريبية مجانية من جوجل للمطورين والمبدعين لتجربة وبناء تطبيقات باستخدام أحدث نماذج الذكاء الاصطناعي مثل Gemini.
 imageUrl: /uploads/1000133433.jpg
 timestamp: 2024-07-28T10:00:00Z
 link: https://aistudio.google.com/
