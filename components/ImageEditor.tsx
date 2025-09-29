@@ -124,10 +124,13 @@ const AIChat: React.FC = () => {
             console.error("Error sending message:", err);
 
             if (isImageRequest) {
-                let errorText = '⚠️ فشل توليد الصورة.\nحدث خطأ غير متوقع. يرجى المحاولة مرة أخرى بعد قليل.';
+                let errorText = '⚠️ عذراً، لم نتمكن من توليد الصورة. قد يكون الطلب غير واضح أو يخالف سياسات المحتوى. يرجى المحاولة بطلب مختلف.';
                 if (err instanceof Error) {
-                    if (err.message.toLowerCase().includes('policy') || err.message.toLowerCase().includes('safety')) {
+                    const lowerCaseError = err.message.toLowerCase();
+                    if (lowerCaseError.includes('policy') || lowerCaseError.includes('safety')) {
                          errorText = '⚠️ فشل توليد الصورة.\nقد يخالف الطلب سياسات المحتوى. يرجى محاولة وصف مختلف وأكثر عمومية.';
+                    } else if (lowerCaseError.includes('permission') || lowerCaseError.includes('access denied') || lowerCaseError.includes('not found')) {
+                         errorText = '⚠️ فشل توليد الصورة.\nقد لا يسمح مفتاح API الحالي بتوليد الصور. يرجى مراجعة إعدادات الخطة.';
                     } else if (err.message.includes('API key')) {
                         errorText = '⚠️ حدث خطأ في الاتصال بالخادم. يرجى التحقق من الإعدادات والمحاولة لاحقاً.';
                     }
