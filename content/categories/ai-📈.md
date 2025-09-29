@@ -1,4 +1,4 @@
 ---
-title: AI 📈
+title: AI 🤖
 id: "2"
 ---
