@@ -1,13 +1,10 @@
 ---
-title: aistudio AI
-description: >-
-  Google AI Studio
-
-  هي منصة تجريبية مجانية من جوجل للمطورين والمبدعين لتجربة وبناء تطبيقات باستخدام أحدث نماذج الذكاء الاصطناعي مثل Gemini.
-imageUrl: /uploads/1000133433.jpg
-timestamp: 2024-07-28T10:00:00Z
-link: https://aistudio.google.com/
-fileUrl: /uploads/app1.apk
-category: general
+title: تطبيق تحرير الصور الاحترافي
+description: أفضل تطبيق لتعديل الصور وإضافة فلاتر رائعة بكل سهولة.
+imageUrl: "/uploads/picsum1.jpeg"
+timestamp: '2024-07-28T10:00:00Z'
+link: https://example.com/app1
+fileUrl: "/uploads/app1.apk"
+category: android-apps
 ---
 هذا التطبيق يوفر مجموعة واسعة من الأدوات الاحترافية لتعديل الصور. يمكنك التحكم في الإضاءة، الألوان، التباين، وإضافة تأثيرات فنية مذهلة. الواجهة سهلة الاستخدام ومناسبة للمبتدئين والمحترفين على حد سواء.
