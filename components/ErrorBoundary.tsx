@@ -8,21 +8,21 @@ interface State {
   hasError: boolean;
 }
 
-// FIX: Changed to extend `React.Component` to resolve a TypeScript error where `this.props` was not being recognized.
+// FIX: Refactored to a standard class component structure to ensure correct type inference for `this.props`.
 class ErrorBoundary extends React.Component<Props, State> {
-  public state: State = {
+  state: State = {
     hasError: false,
   };
 
-  public static getDerivedStateFromError(_: Error): State {
+  static getDerivedStateFromError(_: Error): State {
     return { hasError: true };
   }
 
-  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error("Uncaught error:", error, errorInfo);
   }
 
-  public render() {
+  render() {
     if (this.state.hasError) {
       return (
         <div className="bg-gray-900 min-h-screen text-white flex items-center justify-center p-4">

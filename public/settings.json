@@ -1,19 +1,19 @@
 {
   "identity": {
-    "logoUrl": "/uploads/photoroom-20240221_160131.png",
-    "siteName": "techtouch تقنية",
-    "announcementText": "تم انشاء الموقع من خلال aistudio.google خلال يوم واحد فقط ",
-    "announcementLink": "https://t.me/techtouch7"
+    "logoUrl": "/uploads/picsum-avatar.jpeg",
+    "siteName": "techtouch0",
+    "announcementText": "محتوى إعلاني تجريبي يظهر هنا لجذب الانتباه.",
+    "announcementLink": "https://google.com"
   },
   "colors": {
     "header": "#1f2937",
-    "card": "rgba(43, 118, 230, 0.5)",
+    "card": "rgba(31, 41, 55, 0.5)",
     "primary": "#ef4444"
   },
   "socials": {
     "facebook": "https://facebook.com",
     "tiktok": "https://tiktok.com",
     "youtube": "https://youtube.com",
-    "telegram": "https://t.me/techtouch7"
+    "telegram": "https://telegram.org"
   }
 }
