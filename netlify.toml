@@ -1,4 +1,4 @@
-here# إعدادات البناء لموقعك
+
 [build]
   # الأمر الذي سيتم تنفيذه لبناء الموقع
   command = "npm run build"
@@ -16,3 +16,4 @@ here# إعدادات البناء لموقعك
   from = "/*"
   to = "/index.html"
   status = 200
+
