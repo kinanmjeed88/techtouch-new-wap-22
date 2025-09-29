@@ -69,12 +69,17 @@ const AIChat: React.FC = () => {
         setIsLoading(true);
         setError(null);
 
+        const isImageRequest = userMessageText.trim().toLowerCase().startsWith('ارسم');
+
         try {
-            if (userMessageText.trim().toLowerCase().startsWith('ارسم')) {
+            if (isImageRequest) {
                 const imagePrompt = userMessageText.replace(/^ارسم/i, '').trim();
 
                 if (!imagePrompt) {
-                    throw new Error("يرجى تقديم وصف للصورة المراد توليدها.");
+                    const errorMessage = { role: 'model', text: '⚠️ يرجى تقديم وصف للصورة بعد كلمة "ارسم".' };
+                    setMessages(prev => [...prev, errorMessage]);
+                    setIsLoading(false);
+                    return;
                 }
 
                 setMessages(prev => [...prev, { role: 'model', text: `🎨 جاري توليد صورة لـ: "${imagePrompt}"...` }]);
@@ -117,30 +122,45 @@ const AIChat: React.FC = () => {
             }
         } catch (err) {
             console.error("Error sending message:", err);
-            const isImageRequest = userMessageText.trim().toLowerCase().startsWith('ارسم');
-            
-            let errorMessage = 'عذراً، حدث خطأ أثناء التواصل مع الذكاء الاصطناعي. يرجى المحاولة مرة أخرى.';
-            if (isImageRequest) {
-                errorMessage = 'عذراً، لم نتمكن من توليد الصورة. قد يكون الطلب غير واضح أو يخالف سياسات المحتوى. يرجى المحاولة بطلب مختلف.';
-            }
-            if (err instanceof Error && err.message.includes('API key')) {
-                errorMessage = 'حدث خطأ في الاتصال بالخادم. يرجى التحقق من إعدادات الاتصال والمحاولة لاحقاً.';
-            }
 
-            setError(errorMessage);
-            
-            setMessages(prev => {
-                const lastMessage = prev[prev.length - 1];
-                if (lastMessage && lastMessage.role === 'model' && !lastMessage.imageUrl && (!lastMessage.text || lastMessage.text.includes('...'))) {
-                    return prev.slice(0, -1);
+            if (isImageRequest) {
+                let errorText = '⚠️ فشل توليد الصورة.\nحدث خطأ غير متوقع. يرجى المحاولة مرة أخرى بعد قليل.';
+                if (err instanceof Error) {
+                    if (err.message.toLowerCase().includes('policy') || err.message.toLowerCase().includes('safety')) {
+                         errorText = '⚠️ فشل توليد الصورة.\nقد يخالف الطلب سياسات المحتوى. يرجى محاولة وصف مختلف وأكثر عمومية.';
+                    } else if (err.message.includes('API key')) {
+                        errorText = '⚠️ حدث خطأ في الاتصال بالخادم. يرجى التحقق من الإعدادات والمحاولة لاحقاً.';
+                    }
                 }
-                return prev;
-            });
+                
+                setMessages(prev => {
+                    const newMessages = [...prev];
+                    const lastMessage = newMessages[newMessages.length - 1];
+                    if (lastMessage && lastMessage.role === 'model' && lastMessage.text?.startsWith('🎨')) {
+                        lastMessage.text = errorText;
+                        return newMessages;
+                    }
+                    return [...prev, { role: 'model', text: errorText }];
+                });
+            } else {
+                let errorMessage = 'عذراً، حدث خطأ أثناء التواصل مع الذكاء الاصطناعي. يرجى المحاولة مرة أخرى.';
+                if (err instanceof Error && err.message.includes('API key')) {
+                    errorMessage = 'حدث خطأ في الاتصال بالخادم. يرجى التحقق من إعدادات الاتصال والمحاولة لاحقاً.';
+                }
+                setError(errorMessage);
+                
+                setMessages(prev => {
+                    const lastMessage = prev[prev.length - 1];
+                    if (lastMessage && lastMessage.role === 'model' && lastMessage.text === '') {
+                        return prev.slice(0, -1);
+                    }
+                    return prev;
+                });
+            }
         } finally {
             setIsLoading(false);
         }
     };
-
 
     const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key === 'Enter' && !e.shiftKey) {
