@@ -59,4 +59,4 @@ collections:
           - { label: "تطبيق رياضي", value: "sports-apps" }
           - { label: "لعبة", value: "games" }
         required: true
-      - { label: "اضافة نص فقط", name: "body", widget: "markdown", required: true }
+      - { label: "المحتوى", name: "body", widget: "text", required: true }

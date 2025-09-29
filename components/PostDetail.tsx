@@ -25,6 +25,18 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, siteName }) => {
   const twitterShareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(pageUrl)}&text=${encodeURIComponent(shareText)}`;
   const whatsappShareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + ' ' + pageUrl)}`;
 
+  const processContent = (content: string): string => {
+    return content
+      .split('\n')
+      .map(line => {
+        if (line.trim().startsWith('##')) {
+          return `<strong>${line.trim().substring(2).trim()}</strong>`;
+        }
+        return line;
+      })
+      .join('<br />');
+  };
+
   return (
     <div className="p-4 sm:p-6 rounded-lg shadow-xl" style={{ backgroundColor: 'var(--color-header-bg)'}}>
       <button onClick={onBack} className="mb-6 text-sm sm:text-base hover:text-red-300 transition-colors duration-300 font-semibold" style={{ color: 'var(--color-primary-focus)' }}>
@@ -37,7 +49,7 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, siteName }) => {
         
         <img src={post.imageUrl} alt={post.title} className="w-full h-auto max-h-[300px] sm:max-h-[500px] object-cover rounded-lg mb-6 shadow-lg" />
         
-        <div className="prose prose-invert max-w-none text-gray-300 text-sm sm:text-base leading-relaxed" dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, '<br />') }} />
+        <div className="prose prose-invert max-w-none text-gray-300 text-sm sm:text-base leading-relaxed" dangerouslySetInnerHTML={{ __html: processContent(post.content) }} />
 
         <div className="mt-8 pt-6 border-t border-gray-700 flex flex-col sm:flex-row gap-4">
           <a 
