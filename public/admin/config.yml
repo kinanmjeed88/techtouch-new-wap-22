@@ -21,6 +21,8 @@ collections:
               - { label: "اسم الموقع", name: "siteName", widget: "string", default: "techtouch0", required: true }
               - { label: "نص الإعلان", name: "announcementText", widget: "string", required: true }
               - { label: "رابط الإعلان (اختياري)", name: "announcementLink", widget: "string", required: false }
+              - { label: "كلمة الإعلان (مثال: إعلان, جديد)", name: "announcementLabel", widget: "string", default: "إعلان", required: false }
+              - { label: "لون خلفية شريط الإعلان", name: "announcementBgColor", widget: "color", required: false, default: "#1f2937" }
           - label: "ألوان الموقع"
             name: "colors"
             widget: "object"

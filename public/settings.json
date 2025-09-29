@@ -3,7 +3,9 @@
     "logoUrl": "/uploads/picsum-avatar.jpeg",
     "siteName": "techtouch0",
     "announcementText": "محتوى إعلاني تجريبي يظهر هنا لجذب الانتباه.",
-    "announcementLink": "https://google.com"
+    "announcementLink": "https://google.com",
+    "announcementLabel": "إعلان",
+    "announcementBgColor": "#1f2937"
   },
   "colors": {
     "header": "#1f2937",

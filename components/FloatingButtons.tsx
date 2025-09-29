@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from 'react';
 import { HomeIcon, ArrowUpIcon } from './Icons';
 
@@ -8,13 +9,13 @@ interface FloatingButtonsProps {
 }
 
 const FloatingButtons: React.FC<FloatingButtonsProps> = ({ onGoHome, showHomeButton }) => {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isScrollUpVisible, setScrollUpVisible] = useState(false);
 
   const toggleVisibility = () => {
     if (window.pageYOffset > 300) {
-      setIsVisible(true);
+      setScrollUpVisible(true);
     } else {
-      setIsVisible(false);
+      setScrollUpVisible(false);
     }
   };
 
@@ -43,7 +44,7 @@ const FloatingButtons: React.FC<FloatingButtonsProps> = ({ onGoHome, showHomeBut
           <HomeIcon className="w-6 h-6 sm:w-8 sm:h-8" />
         </button>
       )}
-      {isVisible && (
+      {isScrollUpVisible && (
         <button
           onClick={scrollToTop}
           aria-label="العودة للأعلى"

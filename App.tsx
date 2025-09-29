@@ -9,6 +9,7 @@ import FloatingButtons from './components/FloatingButtons';
 import PostCard from './components/PostCard';
 import Pagination from './components/Pagination';
 import SkeletonLoader from './components/SkeletonLoader';
+import ImageEditor from './components/ImageEditor';
 import type { Category, Post, SiteSettings } from './types';
 
 interface AppData {
@@ -17,6 +18,8 @@ interface AppData {
   siteName: string;
   announcementText: string;
   announcementLink?: string;
+  announcementLabel: string;
+  announcementBgColor: string;
   colors?: SiteSettings['colors'];
   socials?: SiteSettings['socials'];
 }
@@ -27,7 +30,8 @@ const App: React.FC = () => {
   const [appData, setAppData] = useState<AppData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  
+  const [currentView, setCurrentView] = useState<'home' | 'postDetail' | 'imageEditor'>('home');
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<Category | 'all'>('all');
@@ -57,6 +61,8 @@ const App: React.FC = () => {
           siteName: identity.siteName || 'techtouch0',
           announcementText: identity.announcementText || '',
           announcementLink: identity.announcementLink,
+          announcementLabel: identity.announcementLabel || 'إعلان',
+          announcementBgColor: identity.announcementBgColor || 'var(--color-header-bg)',
           colors: colors,
           socials: socials,
         });
@@ -82,11 +88,19 @@ const App: React.FC = () => {
 
   const handleSelectPost = (post: Post) => {
     setSelectedPost(post);
+    setCurrentView('postDetail');
     window.scrollTo(0, 0);
   };
 
   const handleGoHome = () => {
     setSelectedPost(null);
+    setCurrentView('home');
+  };
+  
+  const handleGoToImageEditor = () => {
+    setSelectedPost(null);
+    setCurrentView('imageEditor');
+    window.scrollTo(0, 0);
   };
 
   const handleFilterChange = (category: Category | 'all') => {
@@ -125,6 +139,41 @@ const App: React.FC = () => {
   const paginatedPosts = filteredPosts.slice(
     (currentPage - 1) * POSTS_PER_PAGE,
     currentPage * POSTS_PER_PAGE
+  );
+  
+  const renderHomeView = () => (
+    <div>
+      <CategoryTabs />
+      
+      {loading ? <SkeletonLoader /> : filteredPosts.length > 0 ? (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {paginatedPosts.map((post, index) => (
+              <PostCard 
+                key={post.id} 
+                post={post} 
+                onSelect={handleSelectPost}
+                categoryTitle={categoryPostTitles[post.category]}
+                index={index}
+              />
+            ))}
+          </div>
+          <Pagination 
+            totalPosts={filteredPosts.length}
+            postsPerPage={POSTS_PER_PAGE}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+          />
+        </>
+      ) : (
+        <div className="flex items-center justify-center h-64 bg-gray-800/50 rounded-lg">
+          <div className="text-center">
+            <h3 className="text-2xl font-bold text-gray-400">لا توجد نتائج</h3>
+            <p className="text-gray-500 mt-2">حاول تغيير فلتر البحث أو التصنيف.</p>
+          </div>
+        </div>
+      )}
+    </div>
   );
 
   if (error) {
@@ -175,50 +224,32 @@ const App: React.FC = () => {
   return (
     <div className="bg-gray-900 min-h-screen text-white">
       <div className="container mx-auto px-4 py-8">
-        <Header onSearch={handleSearchChange} logoUrl={appData.logoUrl} siteName={appData.siteName} />
-        <AnnouncementBar content={appData.announcementText} link={appData.announcementLink} />
+        <Header 
+          onSearch={handleSearchChange} 
+          logoUrl={appData.logoUrl} 
+          siteName={appData.siteName}
+          onGoHome={handleGoHome}
+          onGoToImageEditor={handleGoToImageEditor}
+        />
+        <AnnouncementBar 
+          content={appData.announcementText} 
+          link={appData.announcementLink} 
+          label={appData.announcementLabel}
+          bgColor={appData.announcementBgColor}
+        />
 
         <main className="mt-8">
-          {selectedPost ? (
+          {currentView === 'postDetail' && selectedPost ? (
             <PostDetail post={selectedPost} onBack={handleGoHome} siteName={appData.siteName} />
+          ) : currentView === 'imageEditor' ? (
+            <ImageEditor />
           ) : (
-            <div>
-              <CategoryTabs />
-              
-              {loading ? <SkeletonLoader /> : filteredPosts.length > 0 ? (
-                <>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {paginatedPosts.map((post, index) => (
-                      <PostCard 
-                        key={post.id} 
-                        post={post} 
-                        onSelect={handleSelectPost}
-                        categoryTitle={categoryPostTitles[post.category]}
-                        index={index}
-                      />
-                    ))}
-                  </div>
-                  <Pagination 
-                    totalPosts={filteredPosts.length}
-                    postsPerPage={POSTS_PER_PAGE}
-                    currentPage={currentPage}
-                    onPageChange={setCurrentPage}
-                  />
-                </>
-              ) : (
-                <div className="flex items-center justify-center h-64 bg-gray-800/50 rounded-lg">
-                  <div className="text-center">
-                    <h3 className="text-2xl font-bold text-gray-400">لا توجد نتائج</h3>
-                    <p className="text-gray-500 mt-2">حاول تغيير فلتر البحث أو التصنيف.</p>
-                  </div>
-                </div>
-              )}
-            </div>
+            renderHomeView()
           )}
         </main>
       </div>
       <Footer socials={appData.socials} />
-      <FloatingButtons onGoHome={handleGoHome} showHomeButton={!!selectedPost} />
+      <FloatingButtons onGoHome={handleGoHome} showHomeButton={currentView !== 'home'} />
     </div>
   );
 };

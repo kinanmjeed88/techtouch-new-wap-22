@@ -8,8 +8,8 @@ interface State {
   hasError: boolean;
 }
 
-// FIX: Refactored to use an explicit constructor to initialize state. This ensures props are correctly passed via super(props) and can resolve subtle type inference issues with `this.props` in certain build configurations.
 class ErrorBoundary extends React.Component<Props, State> {
+  // FIX: Reverted to using a constructor for state initialization. In some TypeScript or build configurations, class field declarations might not be processed correctly, leading to issues where `this.props` or `this.state` are not recognized on the component instance. The constructor is a more established pattern that ensures proper initialization.
   constructor(props: Props) {
     super(props);
     this.state = {
