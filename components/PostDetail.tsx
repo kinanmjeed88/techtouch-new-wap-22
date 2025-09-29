@@ -81,7 +81,6 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, siteName }) => {
                 <span>{formattedDate}</span>
                  <div className="flex items-center gap-1">
                     <EyeIcon className="w-5 h-5" />
-                    <span>{post.views}</span>
                 </div>
             </div>
         </div>

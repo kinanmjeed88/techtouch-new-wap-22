@@ -51,7 +51,6 @@ const PostCard: React.FC<PostCardProps> = ({ post, onSelect, categoryTitle, inde
         >
           <div className="flex items-center gap-1">
             <EyeIcon className="w-4 h-4" />
-            <span>{post.views}</span>
           </div>
         </div>
       </div>
