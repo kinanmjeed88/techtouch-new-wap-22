@@ -42,25 +42,6 @@ export const WhatsAppIcon: React.FC<IconProps> = ({ className = "w-8 h-8" }) => 
     </svg>
 );
 
-{/* FIX: Add missing LikeIcon, DislikeIcon, and LoveIcon components */}
-export const LikeIcon: React.FC<IconProps> = ({ className = "w-6 h-6", filled = false }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 16 16" strokeWidth="1" stroke="currentColor" fill={filled ? "currentColor" : "none"}>
-    <path d="M6.956 1.745C7.021.81 7.908.087 8.864.325l.261.066c.463.116.874.456 1.012.965.22.816.533 2.511.062 4.51a9.84 9.84 0 0 1 .443-.051c.713-.065 1.669-.072 2.516.21.518.173.994.681 1.2 1.273.184.532.16 1.162-.234 1.733.058.119.103.242.138.363.077.27.113.567.113.856 0 .289-.036.586-.113.856-.039.135-.09.273-.16.404.169.387.107.819-.003 1.148a3.16 3.16 0 0 1-.488.901c.054.152.076.312.076.465 0 .305-.089.625-.253.912C13.1 15.522 12.437 16 11.5 16H8c-.605 0-1.07-.081-1.466-.218a4.82 4.82 0 0 1-.97-.484l-.048-.03c-.504-.307-.999-.609-2.068-.722C2.682 14.464 2 13.846 2 13V9c0-.85.685-1.432 1.357-1.615.849-.232 1.574-.787 2.132-1.41.56-.627.914-1.28 1.039-1.639.199-.575.356-1.539.428-2.59z"/>
-  </svg>
-);
-
-export const DislikeIcon: React.FC<IconProps> = ({ className = "w-6 h-6", filled = false }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 16 16" strokeWidth="1" stroke="currentColor" fill={filled ? "currentColor" : "none"}>
-    <path d="M6.956 14.255c.065.936.952 1.659 1.908 1.42l.261-.065a1.378 1.378 0 0 0 1.012-.965c.22-.816.533-2.511.062-4.51a9.843 9.843 0 0 0 .443.051c.713.065 1.669.072 2.516-.211.518-.173.994-.68 1.2-1.272a1.896 1.896 0 0 0-.234-1.734.058-.119.103-.242.138-.363.077-.27.113-.566.113-.856 0-.289-.036-.586-.113-.856a2.144 2.144 0 0 0-.138-.364.058-.119.103-.242.138-.363.077-.27.113-.566.113-.856 0-.289-.036-.586-.113-.856-.035-.12-.083-.232-.138-.333.059-.119.103-.242.138-.364.077-.27.113-.566.113-.856 0-.289-.036-.586-.113-.856a2.144 2.144 0 0 0-.138-.364.058-.119.103-.242.138-.363c.169-.387.107-.819-.003-1.148a3.16 3.16 0 0 0-.488-.901.054-.152.076-.312.076-.465c0-.305-.089-.625-.253-.912C13.1 1.478 12.437 1 11.5 1H8c-.605 0-1.07.081-1.466.218a4.82 4.82 0 0 0-.97.484l-.048.03c-.504-.307-.999-.609-2.068.722C2.682 2.536 2 3.154 2 4v4c0 .85.685 1.432 1.357 1.615.849.232 1.574.787 2.132 1.41.56.627.914 1.28 1.039 1.639.199-.575.356 1.539.428 2.59z"/>
-  </svg>
-);
-
-export const LoveIcon: React.FC<IconProps> = ({ className = "w-6 h-6", filled = false }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill={filled ? "currentColor" : "none"}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-  </svg>
-);
-
 export const HomeIcon: React.FC<IconProps> = ({ className = "w-8 h-8" }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
@@ -114,4 +95,22 @@ export const TrashIcon: React.FC<IconProps> = ({ className = "w-6 h-6" }) => (
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 4.811 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
   </svg>
+);
+// FIX: Add LikeIcon, DislikeIcon, and LoveIcon components to be used for post reactions.
+export const LikeIcon: React.FC<IconProps> = ({ className = "w-6 h-6", filled = false }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" fill={filled ? 'currentColor' : 'none'}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M6.633 10.5c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 012.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 00.322-1.672V3a.75.75 0 01.75-.75A2.25 2.25 0 0116.5 4.5c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 01-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 00-1.423-.23H5.25a2.25 2.25 0 01-2.25-2.25v-6.75a2.25 2.25 0 012.25-2.25h1.383z" />
+    </svg>
+  );
+  
+export const DislikeIcon: React.FC<IconProps> = ({ className = "w-6 h-6", filled = false }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" fill={filled ? 'currentColor' : 'none'}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M7.867 13.5C7.061 13.5 6.334 13.946 5.836 14.58a9.041 9.041 0 00-2.861 2.4c-.723.384-1.35.956-1.653 1.715a4.498 4.498 0 00-.322 1.672v2.1a.75.75 0 00.75.75A2.25 2.25 0 005.25 21v-6.75a2.25 2.25 0 00-2.25-2.25H1.383c-1.026 0-1.945-.694-2.054-1.715A12.134 12.134 0 011.285 6.02a11.95 11.95 0 017.521-2.649.75.75 0 01.75.75v3.182a.75.75 0 00.75.75h3.126c.413 0 .806.162 1.1.448.293.286.448.68.448 1.075a.75.75 0 01-.75.75H12.25a.75.75 0 00-.75.75v3.375c0 .414.336.75.75.75h2.25a.75.75 0 00.75-.75v-1.5a.75.75 0 01.75-.75h.75a.75.75 0 01.75.75v3.375a.75.75 0 00.75.75h.75a.75.75 0 00.75-.75V12a.75.75 0 01.75-.75h.75a.75.75 0 01.75.75v6.75a2.25 2.25 0 01-2.25 2.25h-3.328c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 00-1.423-.23H7.867z" />
+    </svg>
+);
+  
+export const LoveIcon: React.FC<IconProps> = ({ className = "w-6 h-6", filled = false }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" fill={filled ? 'currentColor' : 'none'}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+    </svg>
 );

@@ -49,8 +49,9 @@ const PostCard: React.FC<PostCardProps> = ({ post, onSelect, categoryTitle, inde
           className="mt-4 pt-3 border-t border-gray-700/50 flex items-center justify-end text-xs"
           style={{ color: 'var(--color-card-description)' }}
         >
-          <div className="flex items-center">
-            <span className="text-lg" aria-hidden="true">👁️‍🗨️</span>
+          <div className="flex items-center gap-1">
+            <EyeIcon className="w-4 h-4" />
+            <span>{post.views}</span>
           </div>
         </div>
       </div>

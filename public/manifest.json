@@ -1,0 +1,27 @@
+{
+  "name": "techtouch0",
+  "short_name": "techtouch0",
+  "description": "A modern, dynamic web page featuring posts, applications, and games, with a clean user interface and smooth navigation, designed to be managed via a headless CMS.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#111827",
+  "theme_color": "#1f2937",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/uploads/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/uploads/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}

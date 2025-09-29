@@ -1,17 +1,16 @@
 {
   "identity": {
-    "logoUrl": "/uploads/photoroom-20240221_160131.png",
-    "siteName": "techtouch  تقنية",
-    "announcementText": "اهلا بكم في موقعنا الجديد ✅📈✌️",
-    "announcementLink": "https://t.me/techtouch7",
+    "logoUrl": "/uploads/picsum-avatar.jpeg",
+    "siteName": "techtouch0",
+    "announcementText": "محتوى إعلاني تجريبي يظهر هنا لجذب الانتباه.",
+    "announcementLink": "https://google.com",
     "announcementLabel": "إعلان",
-    "announcementBgColor": "#1f2937",
-    "announcementTextColor": "#ffffff"
+    "announcementBgColor": "#1f2937"
   },
   "colors": {
     "header": "#1f2937",
-    "card": "rgba(13, 85, 192, 0.5)",
-    "primary": "#152fdc"
+    "card": "rgba(31, 41, 55, 0.5)",
+    "primary": "#ef4444"
   },
   "socials": {
     "facebook": "https://facebook.com",
