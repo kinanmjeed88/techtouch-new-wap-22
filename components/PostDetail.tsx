@@ -1,8 +1,9 @@
 
 import React, { useState } from 'react';
 import type { Post } from '../types';
-import { FacebookIcon, TwitterIcon, WhatsAppIcon, SparklesIcon, EyeIcon } from './Icons';
+import { FacebookIcon, TwitterIcon, WhatsAppIcon, SparklesIcon, EyeIcon, TelegramIcon } from './Icons';
 import { GoogleGenAI } from '@google/genai';
+import ReactionButtons from './ReactionButtons';
 
 interface PostDetailProps {
   post: Post;
@@ -28,6 +29,7 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, siteName }) => {
   const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}&quote=${encodeURIComponent(shareText)}`;
   const twitterShareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(pageUrl)}&text=${encodeURIComponent(shareText)}`;
   const whatsappShareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + ' ' + pageUrl)}`;
+  const telegramShareUrl = `https://t.me/share/url?url=${encodeURIComponent(pageUrl)}&text=${encodeURIComponent(shareText)}`;
 
   const processContent = (content: string): string => {
     return content
@@ -75,11 +77,14 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, siteName }) => {
 
       <article>
         <h1 className="text-2xl sm:text-4xl font-bold mb-4">{post.title}</h1>
-        <div className="flex items-center gap-x-4 flex-wrap text-gray-400 text-sm mb-6">
-            <span>{formattedDate}</span>
-            <div className="flex items-center gap-x-1.5">
-                <EyeIcon className="w-5 h-5" />
+        <div className="flex items-center justify-between flex-wrap gap-4 text-gray-400 text-sm mb-6">
+            <div className="flex items-center gap-x-4">
+                <span>{formattedDate}</span>
+                <div className="flex items-center gap-x-1.5">
+                    <EyeIcon className="w-5 h-5" />
+                </div>
             </div>
+            <ReactionButtons postId={post.id} />
         </div>
         
         {post.imageUrl && <img src={post.imageUrl} alt={post.title} className="w-full h-auto max-h-[300px] sm:max-h-[500px] object-cover rounded-lg mb-6 shadow-lg" />}
@@ -161,6 +166,9 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, siteName }) => {
                 </a>
                 <a href={whatsappShareUrl} target="_blank" rel="noopener noreferrer" aria-label="Share on WhatsApp" className="text-gray-400 hover:text-red-400 transition-all duration-300 transform hover:scale-125 text-primary-hover">
                     <WhatsAppIcon className="w-7 h-7" />
+                </a>
+                <a href={telegramShareUrl} target="_blank" rel="noopener noreferrer" aria-label="Share on Telegram" className="text-gray-400 hover:text-red-400 transition-all duration-300 transform hover:scale-125 text-primary-hover">
+                    <TelegramIcon className="w-7 h-7" />
                 </a>
             </div>
         </div>

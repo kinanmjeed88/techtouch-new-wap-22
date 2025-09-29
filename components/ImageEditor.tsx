@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { GoogleGenAI, Chat } from '@google/genai';
-import { SparklesIcon, SendIcon } from './Icons';
+import { SparklesIcon, SendIcon, TrashIcon } from './Icons';
 
 // Define ai instance outside the component to avoid re-creation on re-renders
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
@@ -10,6 +10,8 @@ interface Message {
     role: 'user' | 'model';
     text?: string;
 }
+
+const CHAT_HISTORY_KEY = 'ai-chat-history';
 
 const AIChat: React.FC = () => {
     const [chat, setChat] = useState<Chat | null>(null);
@@ -20,7 +22,7 @@ const AIChat: React.FC = () => {
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-    useEffect(() => {
+    const initializeChat = () => {
         const chatSession = ai.chats.create({
             model: 'gemini-2.5-flash',
             config: {
@@ -28,11 +30,28 @@ const AIChat: React.FC = () => {
             },
         });
         setChat(chatSession);
-        const initialMessage: Message = { 
-            role: 'model', 
-            text: 'مرحباً بك في موقع techtouch! كيف يمكنني مساعدتك اليوم؟'
-        };
-        setMessages([initialMessage]);
+        return chatSession;
+    };
+
+    useEffect(() => {
+        try {
+            const storedHistory = localStorage.getItem(CHAT_HISTORY_KEY);
+            if (storedHistory) {
+                setMessages(JSON.parse(storedHistory));
+            } else {
+                setMessages([{ 
+                    role: 'model', 
+                    text: 'مرحباً بك في موقع techtouch! كيف يمكنني مساعدتك اليوم؟'
+                }]);
+            }
+        } catch (error) {
+            console.error('Failed to load chat history:', error);
+             setMessages([{ 
+                role: 'model', 
+                text: 'مرحباً بك في موقع techtouch! كيف يمكنني مساعدتك اليوم؟'
+            }]);
+        }
+        initializeChat();
     }, []);
 
     const scrollToBottom = () => {
@@ -40,6 +59,16 @@ const AIChat: React.FC = () => {
     };
 
     useEffect(scrollToBottom, [messages]);
+    
+    useEffect(() => {
+        if (messages.length > 0) {
+            try {
+                localStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(messages));
+            } catch (error) {
+                console.error('Failed to save chat history:', error);
+            }
+        }
+    }, [messages]);
 
     useEffect(() => {
         if (textareaRef.current) {
@@ -47,6 +76,15 @@ const AIChat: React.FC = () => {
             textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
         }
     }, [userInput]);
+    
+    const handleClearChat = () => {
+        localStorage.removeItem(CHAT_HISTORY_KEY);
+        setMessages([{ 
+            role: 'model', 
+            text: 'مرحباً بك في موقع techtouch! كيف يمكنني مساعدتك اليوم؟'
+        }]);
+        initializeChat();
+    };
 
     const handleSendMessage = async () => {
         if (!userInput.trim() || !chat || isLoading) return;
@@ -100,7 +138,17 @@ const AIChat: React.FC = () => {
 
     return (
         <div className="flex flex-col h-[calc(100vh-20rem)] max-h-[700px] p-4 sm:p-6 rounded-lg shadow-xl animate-fadeIn" style={{ backgroundColor: 'var(--color-header-bg)' }}>
-            <h2 className="text-xl sm:text-2xl font-bold mb-4 text-center">محادثة مع الذكاء الاصطناعي</h2>
+            <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl sm:text-2xl font-bold text-center flex-grow">محادثة مع الذكاء الاصطناعي</h2>
+                 <button
+                    onClick={handleClearChat}
+                    title="مسح المحادثة"
+                    aria-label="Clear chat"
+                    className="p-2 text-gray-400 hover:text-white transition-colors duration-200"
+                >
+                    <TrashIcon className="w-5 h-5" />
+                </button>
+            </div>
             <div className="flex-grow overflow-y-auto pr-2 space-y-4">
                 {messages.map((msg, index) => (
                     <div key={index} className={`flex items-start gap-3 ${msg.role === 'user' ? 'justify-end' : ''}`}>
