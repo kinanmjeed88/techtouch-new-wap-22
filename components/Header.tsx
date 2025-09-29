@@ -1,17 +1,17 @@
 
 
 import React from 'react';
-import { SearchIcon, PhotoIcon } from './Icons';
+import { SearchIcon, ChatBubbleIcon } from './Icons';
 
 interface HeaderProps {
   onSearch: (query: string) => void;
   logoUrl: string;
   siteName: string;
   onGoHome: () => void;
-  onGoToImageEditor: () => void;
+  onGoToAIChat: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ onSearch, logoUrl, siteName, onGoHome, onGoToImageEditor }) => {
+const Header: React.FC<HeaderProps> = ({ onSearch, logoUrl, siteName, onGoHome, onGoToAIChat }) => {
   return (
     <header 
       className="flex flex-col items-center justify-center p-4 sm:p-6 rounded-lg shadow-lg"
@@ -42,12 +42,12 @@ const Header: React.FC<HeaderProps> = ({ onSearch, logoUrl, siteName, onGoHome, 
           </div>
         </div>
         <button 
-          onClick={onGoToImageEditor} 
-          title="تعديل الصور بالذكاء الاصطناعي" 
-          aria-label="AI Image Editor"
+          onClick={onGoToAIChat} 
+          title="محادثة مع الذكاء الاصطناعي" 
+          aria-label="AI Chat"
           className="p-2 sm:p-3 bg-gray-700 rounded-full text-gray-300 hover:bg-gray-600 hover:text-white transition-all duration-300 transform hover:scale-110"
         >
-          <PhotoIcon className="w-5 h-5 sm:w-6 sm:h-6" />
+          <ChatBubbleIcon className="w-5 h-5 sm:w-6 sm:h-6" />
         </button>
       </div>
     </header>

@@ -9,7 +9,7 @@ import FloatingButtons from './components/FloatingButtons';
 import PostCard from './components/PostCard';
 import Pagination from './components/Pagination';
 import SkeletonLoader from './components/SkeletonLoader';
-import ImageEditor from './components/ImageEditor';
+import AIChat from './components/ImageEditor'; // Renamed ImageEditor to AIChat for clarity
 import type { Category, Post, SiteSettings } from './types';
 
 interface AppData {
@@ -31,7 +31,7 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
-  const [currentView, setCurrentView] = useState<'home' | 'postDetail' | 'imageEditor'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'postDetail' | 'aiChat'>('home');
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<Category | 'all'>('all');
@@ -97,9 +97,9 @@ const App: React.FC = () => {
     setCurrentView('home');
   };
   
-  const handleGoToImageEditor = () => {
+  const handleGoToAIChat = () => {
     setSelectedPost(null);
-    setCurrentView('imageEditor');
+    setCurrentView('aiChat');
     window.scrollTo(0, 0);
   };
 
@@ -229,7 +229,7 @@ const App: React.FC = () => {
           logoUrl={appData.logoUrl} 
           siteName={appData.siteName}
           onGoHome={handleGoHome}
-          onGoToImageEditor={handleGoToImageEditor}
+          onGoToAIChat={handleGoToAIChat}
         />
         <AnnouncementBar 
           content={appData.announcementText} 
@@ -241,8 +241,8 @@ const App: React.FC = () => {
         <main className="mt-8">
           {currentView === 'postDetail' && selectedPost ? (
             <PostDetail post={selectedPost} onBack={handleGoHome} siteName={appData.siteName} />
-          ) : currentView === 'imageEditor' ? (
-            <ImageEditor />
+          ) : currentView === 'aiChat' ? (
+            <AIChat />
           ) : (
             renderHomeView()
           )}
