@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect, useRef } from 'react';
 import { GoogleGenAI, Chat } from '@google/genai';
 import { SparklesIcon, SendIcon, TrashIcon } from './Icons';
@@ -158,9 +159,9 @@ const AIChat: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col h-[calc(100vh-20rem)] max-h-[700px] p-4 sm:p-6 rounded-lg shadow-xl animate-fadeIn" style={{ backgroundColor: 'var(--color-header-bg)' }}>
+        <div className="flex flex-col h-[80vh] max-h-[900px] p-4 sm:p-6 rounded-lg shadow-xl animate-fadeIn" style={{ backgroundColor: 'var(--color-header-bg)' }}>
             <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl sm:text-2xl font-bold text-center flex-grow">محادثة مع الذكاء الاصطناعي</h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-center flex-grow">Gemini AI</h2>
                  <button
                     onClick={handleClearChat}
                     title="مسح المحادثة"

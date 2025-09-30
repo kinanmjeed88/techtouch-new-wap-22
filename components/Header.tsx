@@ -49,7 +49,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, logoUrl, siteName, onGoHome, 
         </div>
         <button 
           onClick={onGoToAIChat} 
-          title="محادثة مع الذكاء الاصطناعي" 
+          title="Gemini AI" 
           aria-label="AI Chat"
           className="p-2 sm:p-3 bg-gray-700 rounded-full text-gray-300 hover:bg-gray-600 hover:text-white transition-all duration-300 transform hover:scale-110"
         >
