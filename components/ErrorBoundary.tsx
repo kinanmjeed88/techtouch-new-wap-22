@@ -1,5 +1,5 @@
-// FIX: Switched to a namespace import for React (`import * as React from 'react'`) to ensure proper type resolution for React.Component and its properties like `props`. This resolves an issue where TypeScript was not correctly recognizing that the ErrorBoundary class extends a React Component, thus causing it to not find the `props` property.
-import * as React from 'react';
+// FIX: Changed React import to default import to resolve component props type issue.
+import React from 'react';
 
 interface ErrorBoundaryProps {
   children: React.ReactNode;

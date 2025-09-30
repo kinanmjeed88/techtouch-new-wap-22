@@ -3,7 +3,7 @@ import { GoogleGenAI, Chat } from '@google/genai';
 import { SparklesIcon, SendIcon, TrashIcon } from './Icons';
 
 // Define ai instance outside the component to avoid re-creation on re-renders
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 interface Message {
     role: 'user' | 'model';

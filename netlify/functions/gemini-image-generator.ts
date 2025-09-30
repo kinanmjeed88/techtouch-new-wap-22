@@ -16,8 +16,8 @@ const handler: Handler = async (event) => {
         return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method Not Allowed' }) };
     }
 
-    const { GEMINI_API_KEY } = process.env;
-    if (!GEMINI_API_KEY) {
+    const { API_KEY } = process.env;
+    if (!API_KEY) {
         return {
             statusCode: 500,
             headers,
@@ -38,7 +38,7 @@ const handler: Handler = async (event) => {
     }
 
     try {
-        const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
+        const ai = new GoogleGenAI({ apiKey: API_KEY });
         const response = await ai.models.generateImages({
             model: 'imagen-4.0-generate-001',
             prompt: prompt,

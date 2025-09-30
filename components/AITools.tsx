@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import AIChat from './AIChat';
-import AIImageGenerator from './AIImageGenerator';
+import GeminiImageGenerator from './GeminiImageGenerator';
 import { ChatBubbleIcon, ImageIcon } from './Icons';
 
 const AITools: React.FC = () => {
-  const [activeTool, setActiveTool] = useState<'selection' | 'chat' | 'cfImage'>('selection');
+  const [activeTool, setActiveTool] = useState<'selection' | 'chat' | 'geminiImage'>('selection');
 
   const ToolCard = ({ icon, title, description, onClick }: { icon: React.ReactNode, title: string, description: string, onClick: () => void }) => (
     <div
@@ -33,9 +33,9 @@ const AITools: React.FC = () => {
           />
           <ToolCard 
             icon={<ImageIcon className="w-8 h-8 text-red-400" />}
-            title="مولّد الصور (Cloudflare)"
-            description="أنشئ صوراً فريدة من وصف نصي باستخدام Cloudflare AI."
-            onClick={() => setActiveTool('cfImage')}
+            title="مولّد الصور (Gemini)"
+            description="أنشئ صوراً فريدة من وصف نصي باستخدام نموذج Imagen."
+            onClick={() => setActiveTool('geminiImage')}
           />
         </div>
       </div>
@@ -50,7 +50,7 @@ const AITools: React.FC = () => {
         &larr; العودة إلى أدوات AI
       </button>
       {activeTool === 'chat' && <AIChat />}
-      {activeTool === 'cfImage' && <AIImageGenerator />}
+      {activeTool === 'geminiImage' && <GeminiImageGenerator />}
     </div>
   );
 };

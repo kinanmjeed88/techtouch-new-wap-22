@@ -38,7 +38,7 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, siteName }) => {
     setIsSummarizing(true);
     setSummaryError(null);
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const response = await ai.models.generateContent({
         model: 'gemini-2.5-flash',
         contents: post.content,

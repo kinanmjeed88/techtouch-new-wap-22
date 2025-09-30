@@ -6,8 +6,8 @@ const handler: Handler = async (event) => {
         return { statusCode: 405, body: JSON.stringify({ error: 'Method Not Allowed' }) };
     }
 
-    const { GEMINI_API_KEY } = process.env;
-    if (!GEMINI_API_KEY) {
+    const { API_KEY } = process.env;
+    if (!API_KEY) {
         return { 
             statusCode: 500, 
             body: JSON.stringify({ error: 'خدمة الذكاء الاصطناعي غير مكونة بشكل صحيح.' }) 
@@ -44,7 +44,7 @@ const handler: Handler = async (event) => {
     }
 
     try {
-        const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
+        const ai = new GoogleGenAI({ apiKey: API_KEY });
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash',
             contents: content,
