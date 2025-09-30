@@ -56,7 +56,7 @@ collections:
     label: "المنشورات"
     folder: "content/posts"
     create: true
-    slug: "{{year}}-{{month}}-{{day}}-{{fields.slug}}"
+    slug: "{{fields.slug}}"
     fields:
       - { label: "العنوان", name: "title", widget: "string", required: true }
       - { label: "الرابط القصير (Slug بالإنجليزية فقط)", name: "slug", widget: "string", required: true }
