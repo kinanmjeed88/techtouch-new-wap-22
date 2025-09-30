@@ -1,11 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SparklesIcon, DownloadIcon, ImageIcon } from './Icons';
+
+const dataURIToBlob = (dataURI: string): Blob | null => {
+    try {
+        const [header, base64Data] = dataURI.split(',');
+        if (!header || !base64Data) return null;
+        
+        const mimeTypeMatch = header.match(/:(.*?);/);
+        if (!mimeTypeMatch) return null;
+        const mimeType = mimeTypeMatch[1];
+        
+        const byteCharacters = atob(base64Data);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        return new Blob([byteArray], { type: mimeType });
+    } catch (error) {
+        console.error("Error converting data URI to Blob:", error);
+        return null;
+    }
+};
+
 
 const GeminiImageGenerator: React.FC = () => {
     const [prompt, setPrompt] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [imageUrl, setImageUrl] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
+
+    // Effect to clean up object URLs to prevent memory leaks
+    useEffect(() => {
+        return () => {
+            if (imageUrl && imageUrl.startsWith('blob:')) {
+                URL.revokeObjectURL(imageUrl);
+            }
+        };
+    }, [imageUrl]);
 
     const handleGenerate = async () => {
         if (!prompt.trim()) {
@@ -14,6 +46,11 @@ const GeminiImageGenerator: React.FC = () => {
         }
         setIsLoading(true);
         setError(null);
+        
+        // Clean up previous image URL before creating a new one
+        if (imageUrl && imageUrl.startsWith('blob:')) {
+            URL.revokeObjectURL(imageUrl);
+        }
         setImageUrl(null);
 
         try {
@@ -29,7 +66,13 @@ const GeminiImageGenerator: React.FC = () => {
             }
             
             const data = await response.json();
-            setImageUrl(data.imageUrl);
+            const imageBlob = dataURIToBlob(data.imageUrl);
+
+            if (imageBlob) {
+                setImageUrl(URL.createObjectURL(imageBlob));
+            } else {
+                throw new Error('فشل في معالجة الصورة المستلمة من الخادم.');
+            }
 
         } catch (err) {
             console.error("Image generation error:", err);
