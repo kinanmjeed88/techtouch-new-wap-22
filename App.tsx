@@ -7,7 +7,7 @@ import FloatingButtons from './components/FloatingButtons';
 import PostCard from './components/PostCard';
 import Pagination from './components/Pagination';
 import SkeletonLoader from './components/SkeletonLoader';
-import AIChat from './components/ImageEditor';
+import AITools from './components/AITools';
 import type { Category, Post, SiteSettings } from './types';
 
 interface AppData {
@@ -31,7 +31,7 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
-  const [currentView, setCurrentView] = useState<'home' | 'postDetail' | 'aiChat'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'postDetail' | 'aiTools'>('home');
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<Category | 'all'>('all');
@@ -104,9 +104,9 @@ const App: React.FC = () => {
     setCurrentView('home');
   };
   
-  const handleGoToAIChat = () => {
+  const handleGoToAITools = () => {
     setSelectedPost(null);
-    setCurrentView('aiChat');
+    setCurrentView('aiTools');
     window.scrollTo(0, 0);
   };
 
@@ -227,7 +227,7 @@ const App: React.FC = () => {
           logoUrl={appData.logoUrl} 
           siteName={appData.siteName}
           onGoHome={handleGoHome}
-          onGoToAIChat={handleGoToAIChat}
+          onGoToAITools={handleGoToAITools}
           currentView={currentView}
         />
         <AnnouncementBar 
@@ -241,8 +241,8 @@ const App: React.FC = () => {
         <main className="mt-8">
           {currentView === 'postDetail' && selectedPost ? (
             <PostDetail post={selectedPost} onBack={handleGoHome} siteName={appData.siteName} />
-          ) : currentView === 'aiChat' ? (
-            <AIChat />
+          ) : currentView === 'aiTools' ? (
+            <AITools />
           ) : (
             renderHomeView()
           )}

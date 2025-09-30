@@ -1,6 +1,6 @@
-
 import React from 'react';
 import type { Post } from '../types';
+import ReactionButtons from './ReactionButtons';
 
 interface PostCardProps {
   post: Post;
@@ -39,11 +39,14 @@ const PostCard: React.FC<PostCardProps> = ({ post, onSelect, categoryTitle, inde
           {post.title}
         </h3>
         <p 
-          className="text-sm flex-grow"
+          className="text-sm flex-grow mb-4"
           style={{ color: 'var(--color-card-description)' }}
         >
           {post.description}
         </p>
+        <div className="mt-auto pt-4 border-t border-gray-700/50">
+            <ReactionButtons postId={post.id} />
+        </div>
       </div>
     </div>
   );
