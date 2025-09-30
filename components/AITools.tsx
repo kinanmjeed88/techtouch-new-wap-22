@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import AIChat from './ImageEditor';
+import AIChat from './AIChat';
 import AIImageGenerator from './AIImageGenerator';
-import GeminiImageEditor from './GeminiImageEditor';
-import { ChatBubbleIcon, ImageIcon, SparklesIcon } from './Icons';
+import { ChatBubbleIcon, ImageIcon } from './Icons';
 
 const AITools: React.FC = () => {
-  const [activeTool, setActiveTool] = useState<'selection' | 'chat' | 'cfImage' | 'geminiImageEditor'>('selection');
+  const [activeTool, setActiveTool] = useState<'selection' | 'chat' | 'cfImage'>('selection');
 
   const ToolCard = ({ icon, title, description, onClick }: { icon: React.ReactNode, title: string, description: string, onClick: () => void }) => (
     <div
@@ -25,7 +24,7 @@ const AITools: React.FC = () => {
     return (
       <div className="animate-fadeIn">
         <h2 className="text-3xl font-bold text-center mb-8">أدوات الذكاء الاصطناعي</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
           <ToolCard 
             icon={<ChatBubbleIcon className="w-8 h-8 text-red-400" />}
             title="محادثة Gemini"
@@ -34,15 +33,9 @@ const AITools: React.FC = () => {
           />
           <ToolCard 
             icon={<ImageIcon className="w-8 h-8 text-red-400" />}
-            title="توليد الصور (Cloudflare)"
-            description="أنشئ صوراً فريدة من وصف نصي باستخدام الذكاء الاصطناعي."
+            title="مولّد الصور (Cloudflare)"
+            description="أنشئ صوراً فريدة من وصف نصي باستخدام Cloudflare AI."
             onClick={() => setActiveTool('cfImage')}
-          />
-           <ToolCard 
-            icon={<SparklesIcon className="w-8 h-8 text-red-400" />}
-            title="تعديل الصور (Gemini)"
-            description="عدّل على صورك بإضافة أو إزالة عناصر عبر وصف نصي."
-            onClick={() => setActiveTool('geminiImageEditor')}
           />
         </div>
       </div>
@@ -58,7 +51,6 @@ const AITools: React.FC = () => {
       </button>
       {activeTool === 'chat' && <AIChat />}
       {activeTool === 'cfImage' && <AIImageGenerator />}
-      {activeTool === 'geminiImageEditor' && <GeminiImageEditor />}
     </div>
   );
 };
