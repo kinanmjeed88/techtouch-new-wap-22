@@ -1,4 +1,4 @@
-import React, { ErrorInfo, ReactNode } from 'react';
+import React, { Component, ErrorInfo, ReactNode } from 'react';
 
 // FIX: Renamed Props to ErrorBoundaryProps to avoid potential global type conflicts.
 interface ErrorBoundaryProps {
@@ -9,8 +9,10 @@ interface State {
   hasError: boolean;
 }
 
-// Fix: Extends React.Component directly to resolve module resolution issue.
-class ErrorBoundary extends React.Component<ErrorBoundaryProps, State> {
+// Fix: Use named import 'Component' to resolve type issue.
+// The previous use of 'React.Component' was not correctly resolved by the type checker,
+// leading to an error where 'this.props' was considered non-existent.
+class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
   state: State = { hasError: false };
 
   static getDerivedStateFromError(_: Error): State {

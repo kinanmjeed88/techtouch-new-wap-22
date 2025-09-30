@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import AIChat from './ImageEditor';
 import AIImageGenerator from './AIImageGenerator';
-import GeminiImageGenerator from './GeminiImageGenerator';
-import { ChatBubbleIcon, ImageIcon } from './Icons';
+import GeminiImageEditor from './GeminiImageEditor';
+import { ChatBubbleIcon, ImageIcon, SparklesIcon } from './Icons';
 
 const AITools: React.FC = () => {
-  const [activeTool, setActiveTool] = useState<'selection' | 'chat' | 'cfImage' | 'geminiImage'>('selection');
+  const [activeTool, setActiveTool] = useState<'selection' | 'chat' | 'cfImage' | 'geminiImageEditor'>('selection');
 
   const ToolCard = ({ icon, title, description, onClick }: { icon: React.ReactNode, title: string, description: string, onClick: () => void }) => (
     <div
@@ -25,7 +25,7 @@ const AITools: React.FC = () => {
     return (
       <div className="animate-fadeIn">
         <h2 className="text-3xl font-bold text-center mb-8">أدوات الذكاء الاصطناعي</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           <ToolCard 
             icon={<ChatBubbleIcon className="w-8 h-8 text-red-400" />}
             title="محادثة Gemini"
@@ -35,14 +35,14 @@ const AITools: React.FC = () => {
           <ToolCard 
             icon={<ImageIcon className="w-8 h-8 text-red-400" />}
             title="توليد الصور (Cloudflare)"
-            description="أنشئ صوراً فريدة من وصف نصي باستخدام الذكاء الاصطناعي من Cloudflare."
+            description="أنشئ صوراً فريدة من وصف نصي باستخدام الذكاء الاصطناعي."
             onClick={() => setActiveTool('cfImage')}
           />
-          <ToolCard 
-            icon={<ImageIcon className="w-8 h-8 text-red-400" />}
-            title="توليد الصور (Gemini)"
-            description="أنشئ صوراً عالية الجودة باستخدام نموذج Imagen من Google."
-            onClick={() => setActiveTool('geminiImage')}
+           <ToolCard 
+            icon={<SparklesIcon className="w-8 h-8 text-red-400" />}
+            title="تعديل الصور (Gemini)"
+            description="عدّل على صورك بإضافة أو إزالة عناصر عبر وصف نصي."
+            onClick={() => setActiveTool('geminiImageEditor')}
           />
         </div>
       </div>
@@ -58,7 +58,7 @@ const AITools: React.FC = () => {
       </button>
       {activeTool === 'chat' && <AIChat />}
       {activeTool === 'cfImage' && <AIImageGenerator />}
-      {activeTool === 'geminiImage' && <GeminiImageGenerator />}
+      {activeTool === 'geminiImageEditor' && <GeminiImageEditor />}
     </div>
   );
 };

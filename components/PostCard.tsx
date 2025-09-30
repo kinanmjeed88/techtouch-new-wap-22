@@ -1,6 +1,5 @@
 import React from 'react';
 import type { Post } from '../types';
-import ReactionButtons from './ReactionButtons';
 
 interface PostCardProps {
   post: Post;
@@ -44,9 +43,6 @@ const PostCard: React.FC<PostCardProps> = ({ post, onSelect, categoryTitle, inde
         >
           {post.description}
         </p>
-        <div className="mt-auto pt-4 border-t border-gray-700/50">
-            <ReactionButtons postId={post.id} />
-        </div>
       </div>
     </div>
   );
