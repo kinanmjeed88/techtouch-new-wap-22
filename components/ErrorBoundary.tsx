@@ -9,7 +9,8 @@ interface State {
   hasError: boolean;
 }
 
-class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
+// FIX: Explicitly extend React.Component to ensure the correct base class is used, resolving the 'props' not found error.
+class ErrorBoundary extends React.Component<ErrorBoundaryProps, State> {
   state: State = { hasError: false };
 
   static getDerivedStateFromError(_: Error): State {
