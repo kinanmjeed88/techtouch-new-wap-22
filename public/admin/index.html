@@ -21,5 +21,103 @@
       });
     }
   </script>
+
+  <!-- AI Helper Script -->
+  <script>
+    const addAiButtons = () => {
+      const bodyTextarea = document.querySelector('textarea[id^="body-"]');
+      if (!bodyTextarea || bodyTextarea.dataset.aiButtonsAdded) {
+        return;
+      }
+      
+      const container = bodyTextarea.parentElement;
+      if (!container) return;
+
+      const buttonContainer = document.createElement('div');
+      buttonContainer.style.display = 'flex';
+      buttonContainer.style.gap = '10px';
+      buttonContainer.style.marginBottom = '10px';
+      
+      const createButton = (text, task) => {
+          const button = document.createElement('button');
+          button.textContent = text;
+          button.style.backgroundColor = '#4a5568';
+          button.style.color = 'white';
+          button.style.border = 'none';
+          button.style.padding = '8px 12px';
+          button.style.borderRadius = '5px';
+          button.style.cursor = 'pointer';
+          button.style.fontSize = '14px';
+          button.type = 'button';
+          
+          button.addEventListener('mouseover', () => {
+            if (!button.disabled) button.style.backgroundColor = '#2d3748';
+          });
+          button.addEventListener('mouseout', () => {
+            if (!button.disabled) button.style.backgroundColor = '#4a5568';
+          });
+
+          button.addEventListener('click', async () => {
+            const originalText = button.textContent;
+            button.textContent = '...جاري المعالجة';
+            button.disabled = true;
+            button.style.cursor = 'not-allowed';
+            button.style.backgroundColor = '#2d3748';
+
+            try {
+              const content = bodyTextarea.value;
+              if (!content.trim()) {
+                  alert('لا يوجد محتوى لمعالجته.');
+                  return;
+              }
+
+              const response = await fetch('/.netlify/functions/ai-helper', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ content, task }),
+              });
+
+              if (!response.ok) {
+                  const errorData = await response.json();
+                  throw new Error(errorData.error || 'فشل الطلب');
+              }
+
+              const data = await response.json();
+              bodyTextarea.value = data.result;
+              bodyTextarea.dispatchEvent(new Event('input', { bubbles: true }));
+
+            } catch (error) {
+                console.error('AI Helper Error:', error);
+                alert(`حدث خطأ: ${error.message}`);
+            } finally {
+                button.textContent = originalText;
+                button.disabled = false;
+                button.style.cursor = 'pointer';
+                button.style.backgroundColor = '#4a5568';
+            }
+          });
+          return button;
+      };
+
+      const summarizeButton = createButton('تلخيص بالذكاء الاصطناعي', 'summarize');
+      const reorderButton = createButton('ترتيب كنقاط بالذكاء الاصطناعي', 'reorder');
+
+      buttonContainer.appendChild(summarizeButton);
+      buttonContainer.appendChild(reorderButton);
+      
+      container.insertBefore(buttonContainer, bodyTextarea);
+      bodyTextarea.dataset.aiButtonsAdded = 'true';
+    };
+
+    const observer = new MutationObserver(() => {
+        addAiButtons();
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(addAiButtons, 1500);
+    });
+  </script>
 </body>
 </html>
