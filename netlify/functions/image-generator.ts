@@ -54,16 +54,22 @@ const handler: Handler = async (event) => {
         });
 
         if (!cfResponse.ok) {
-            let errorBody;
             const errorText = await cfResponse.text();
+            console.error(`Cloudflare API Error (Status: ${cfResponse.status}):`, errorText);
+
+            if (cfResponse.status === 401 || cfResponse.status === 403) {
+                throw new Error('فشل المصادقة مع Cloudflare. يرجى التحقق من صحة مفتاح API (CLOUDFLARE_API_KEY).');
+            }
+            if (cfResponse.status === 404) {
+                throw new Error('لم يتم العثور على الخدمة. يرجى التحقق من معرّف حساب Cloudflare (CLOUDFLARE_ACCOUNT_ID).');
+            }
+
             try {
-                errorBody = JSON.parse(errorText);
-                console.error('Cloudflare API Error:', JSON.stringify(errorBody, null, 2));
+                const errorBody = JSON.parse(errorText);
                 const cfErrorMessage = errorBody?.errors?.[0]?.message || 'فشل الاتصال بخدمة إنشاء الصور.';
                 throw new Error(cfErrorMessage);
             } catch (e) {
-                console.error('Cloudflare API Non-JSON Error:', errorText);
-                throw new Error('فشل الاتصال بخدمة إنشاء الصور. استجابة غير متوقعة من الخادم.');
+                throw new Error(`استجابة غير متوقعة من الخادم (الحالة: ${cfResponse.status}). قد تكون الخدمة متوقفة مؤقتاً.`);
             }
         }
 

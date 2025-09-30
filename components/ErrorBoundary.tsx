@@ -1,4 +1,3 @@
-// FIX: Use named imports for React types to resolve issue where `this.props` was not found on the class component.
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 
 interface ErrorBoundaryProps {
@@ -9,7 +8,8 @@ interface State {
   hasError: boolean;
 }
 
-// FIX: The class now extends from the named `Component` import to ensure the correct base class is used, resolving the 'props' not found error.
+// Fix: The ErrorBoundary class must extend React.Component to be a valid class component.
+// This gives it access to `this.props`, resolving the error.
 class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
   state: State = { hasError: false };
 
