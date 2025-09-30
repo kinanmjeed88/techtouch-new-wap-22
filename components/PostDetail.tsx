@@ -24,10 +24,18 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, siteName }) => {
   });
 
   const pageUrl = window.location.href;
-  const shareText = `${post.title} - ${siteName}`;
+  
+  // Determine the main text for sharing. Use summary if available, otherwise fall back to title.
+  const shareText = summary || `${post.title} - ${siteName}`;
+
+  // Construct the specific URLs for each platform.
   const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}&quote=${encodeURIComponent(shareText)}`;
   const twitterShareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(pageUrl)}&text=${encodeURIComponent(shareText)}`;
-  const whatsappShareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + ' ' + pageUrl)}`;
+  
+  // WhatsApp combines text and URL in one parameter. A newline is better for readability.
+  const whatsappShareText = `${shareText}\n\n${pageUrl}`;
+  const whatsappShareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(whatsappShareText)}`;
+  
   const telegramShareUrl = `https://t.me/share/url?url=${encodeURIComponent(pageUrl)}&text=${encodeURIComponent(shareText)}`;
 
   const processContent = (content: string): string => {

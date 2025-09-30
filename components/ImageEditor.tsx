@@ -176,7 +176,8 @@ const AIChat: React.FC = () => {
                     <div key={index} className={`flex items-start gap-3 ${msg.role === 'user' ? 'justify-end' : ''}`}>
                         {msg.role === 'model' && (
                             <span className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-gray-700">
-                                <SparklesIcon className="w-5 h-5" style={{ color: 'var(--color-primary-focus)' }} />
+                                {/* FIX: Replaced the unsupported 'style' prop with a Tailwind class to set the icon color, resolving a TypeScript error. */}
+                                <SparklesIcon className="w-5 h-5 text-[var(--color-primary-focus)]" />
                             </span>
                         )}
                         <div className={`max-w-md lg:max-w-2xl p-3 rounded-xl ${msg.role === 'user' ? 'bg-red-600 text-white' : 'bg-gray-700 text-gray-200'}`} style={msg.role === 'user' ? { backgroundColor: 'var(--color-primary)' } : {}}>
