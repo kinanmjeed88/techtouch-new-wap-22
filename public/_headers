@@ -1,0 +1,13 @@
+# This sets aggressive caching for all static assets like images, css, js
+/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# This tells the browser to always check for a new version of these files
+/index.html
+  Cache-Control: no-cache
+/settings.json
+  Cache-Control: no-cache
+/posts.json
+  Cache-Control: no-cache
+/categories.json
+  Cache-Control: no-cache
