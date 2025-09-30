@@ -1,0 +1,17 @@
+[build]
+  # الأمر الذي سيتم تنفيذه لبناء الموقع
+  command = "npm run build"
+  
+  # المجلد الذي يحتوي على الملفات النهائية بعد البناء
+  publish = "dist"
+
+# إعدادات الدوال (Functions)
+[functions]
+  directory = "netlify/functions"
+
+# قاعدة إعادة التوجيه للتطبيقات أحادية الصفحة (SPA)
+# هذا يضمن أن جميع المسارات تعمل بشكل صحيح عند التحديث أو المشاركة
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
