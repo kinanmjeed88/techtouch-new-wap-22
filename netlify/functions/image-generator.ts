@@ -41,8 +41,8 @@ const handler: Handler = async (event) => {
     }
 
     try {
-        // Switched to a different, potentially more available model
-        const url = `https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/ai/run/@cf/bytedance/stable-diffusion-xl-lightning`;
+        // Switched to a more stable and common model from Stability AI via Cloudflare
+        const url = `https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/ai/run/@cf/stabilityai/stable-diffusion-xl-base-1.0`;
 
         const cfResponse = await fetch(url, {
             method: 'POST',

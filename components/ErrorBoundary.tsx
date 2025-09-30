@@ -1,5 +1,6 @@
 // FIX: Using named imports for React Component parts to resolve potential type resolution issues.
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+// FIX: The named import for Component was causing a type resolution issue where `this.props` was not recognized. Switched to using `React.Component` directly.
+import React, { ErrorInfo, ReactNode } from 'react';
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -9,7 +10,7 @@ interface State {
   hasError: boolean;
 }
 
-class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
+class ErrorBoundary extends React.Component<ErrorBoundaryProps, State> {
   state: State = { hasError: false };
 
   static getDerivedStateFromError(_: Error): State {
