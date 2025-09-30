@@ -9,7 +9,7 @@ interface State {
 }
 
 class ErrorBoundary extends React.Component<Props, State> {
-  // FIX: Reverted to using a constructor. The class property syntax for state initialization appears to conflict with this project's TypeScript configuration, causing inherited properties like 'props' to be unrecognized on the class instance.
+  // FIX: Reverted to a standard constructor. The class property syntax caused a TypeScript error where the inherited 'props' property was not recognized, likely due to a conflict with the project's TS config (`useDefineForClassFields: true`). Using a constructor ensures `super(props)` is called, correctly initializing the component instance.
   constructor(props: Props) {
     super(props);
     this.state = { hasError: false };
