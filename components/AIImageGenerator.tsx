@@ -52,15 +52,15 @@ const AIImageGenerator: React.FC = () => {
     return (
         <div className="flex flex-col p-4 sm:p-6 rounded-lg shadow-xl animate-fadeIn" style={{ backgroundColor: 'var(--color-header-bg)' }}>
             <h2 className="text-xl sm:text-2xl font-bold text-center mb-4">مولّد الصور بالذكاء الاصطناعي</h2>
-            <p className="text-center text-gray-400 mb-6">اكتب وصفاً للصورة التي تريد إنشاءها، وسيقوم الذكاء الاصطناعي بتحويلها إلى حقيقة.</p>
+            <p className="text-center text-gray-400 mb-6 text-sm">اكتب وصفاً للصورة التي تريد إنشاءها باللغة الانكليزية ليكون التصميم اكثر دقة</p>
 
             <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 mb-6">
-                <textarea
+                <input
+                    type="text"
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
-                    placeholder="مثال: قط يرتدي نظارات شمسية على الشاطئ"
-                    rows={2}
-                    className="flex-grow w-full bg-gray-700 text-white placeholder-gray-400 rounded-lg p-2 sm:p-3 focus:outline-none focus:ring-2 ring-primary resize-y"
+                    placeholder="Example: A cat wearing sunglasses on a beach"
+                    className="flex-grow w-full bg-gray-700 text-white placeholder-gray-400 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 ring-primary"
                 />
                 <button
                     onClick={handleGenerate}
