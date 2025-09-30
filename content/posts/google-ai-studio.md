@@ -2,8 +2,8 @@
 title: Google AI Studio
 description: Google AI Studio هي منصة تجريبية مجانية من جوجل للمطورين والمبدعين
   لتجربة وبناء تطبيقات باستخدام أحدث نماذج الذكاء الاصطناعي Gemini.
-imageUrl: https://developers.google.com/static/ai/studio/images/index/og-image-studio.png
-timestamp: 2025-09-29T13:30:00Z
+imageUrl: /uploads/1000133425.jpg
+timestamp: 2025-09-29T13:30:00.000Z
 link: https://ai.google.dev
 fileUrl: https://ai.google.dev
 category: Publications
