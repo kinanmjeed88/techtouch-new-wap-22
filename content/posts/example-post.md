@@ -7,4 +7,5 @@ link: https://aistudio.google.com/apps?source=user
 fileUrl: /uploads/app1.apk
 category: ai
 ---
-https://aistudio.google.com
+aistudio.google
+
