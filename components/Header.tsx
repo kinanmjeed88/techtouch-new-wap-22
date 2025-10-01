@@ -1,5 +1,5 @@
 import React from 'react';
-import { SearchIcon, ChatBubbleIcon } from './Icons';
+import { SearchIcon } from './Icons';
 
 interface HeaderProps {
   onSearch: (query: string) => void;
@@ -49,13 +49,13 @@ const Header: React.FC<HeaderProps> = ({ onSearch, logoUrl, siteName, onGoHome, 
           onClick={onGoToAITools} 
           title="AI Tools" 
           aria-label="AI Tools"
-          className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-gray-700 rounded-full text-gray-300 hover:bg-gray-600 hover:text-white transition-all duration-300 transform hover:scale-110"
+          className={`w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full transition-all duration-300 transform hover:scale-110 ${
+            currentView === 'aiTools' 
+            ? 'btn-primary text-white shadow-lg' 
+            : 'bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white'
+          }`}
         >
-          {currentView === 'aiTools' ? (
-            <span className="font-bold text-base sm:text-lg">AI</span>
-          ) : (
-            <ChatBubbleIcon className="w-5 h-5 sm:w-6 sm:h-6" />
-          )}
+          <span className="font-bold text-base sm:text-lg">AI</span>
         </button>
       </div>
     </header>

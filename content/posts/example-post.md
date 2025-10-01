@@ -1,11 +1,15 @@
 ---
-title: gemini لتحرير الصور الاحترافي
-description: بناء موقع خاص بك  لتعديل الصور وإضافة تغييرات احترافية رائعة بكل سهولة
-imageUrl: /uploads/enhanced-image.jpeg.png
-timestamp: 2024-07-28T10:00:00.000Z
-link: https://aistudio.google.com/apps?source=user
-fileUrl: /uploads/app1.apk
-category: ai
+title: تطبيق تحرير الصور الاحترافي
+description: أفضل تطبيق لتعديل الصور وإضافة فلاتر رائعة بكل سهولة.
+imageUrl: "/uploads/picsum1.jpeg"
+timestamp: '2024-07-28T10:00:00Z'
+link: https://example.com/app1
+fileUrl: "/uploads/app1.apk"
+category: android-apps
 ---
-aistudio.google
+هذا التطبيق يوفر مجموعة واسعة من الأدوات الاحترافية لتعديل الصور. يمكنك التحكم في الإضاءة، الألوان، التباين، وإضافة تأثيرات فنية مذهلة. الواجهة سهلة الاستخدام ومناسبة للمبتدئين والمحترفين على حد سواء.
 
+## مميزات التطبيق
+- فلاتر احترافية
+- أدوات تعديل متقدمة
+- سهولة المشاركة

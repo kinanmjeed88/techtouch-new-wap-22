@@ -1,4 +1,4 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import React, { ErrorInfo, ReactNode } from 'react';
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -9,7 +9,7 @@ interface State {
 }
 
 // Fix: The 'ErrorBoundary' class must extend 'React.Component' to be a valid class component. This provides access to 'this.props' and component lifecycle methods, resolving the error.
-class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
+class ErrorBoundary extends React.Component<ErrorBoundaryProps, State> {
   state: State = { hasError: false };
 
   static getDerivedStateFromError(_: Error): State {

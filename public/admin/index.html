@@ -83,8 +83,14 @@
               }
 
               const data = await response.json();
-              bodyTextarea.value = data.result;
-              bodyTextarea.dispatchEvent(new Event('input', { bubbles: true }));
+              
+              // This is a more robust way to set the value on a React controlled component
+              const nativeTextareaValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value').set;
+              nativeTextareaValueSetter.call(bodyTextarea, data.result);
+
+              // Dispatch an input event to notify React of the change
+              const event = new Event('input', { bubbles: true });
+              bodyTextarea.dispatchEvent(event);
 
             } catch (error) {
                 console.error('AI Helper Error:', error);

@@ -1,12 +1,11 @@
 ---
-title: Google AI Studio
-description: Google AI Studio هي منصة تجريبية مجانية من جوجل للمطورين والمبدعين
-  لتجربة وبناء تطبيقات باستخدام أحدث نماذج الذكاء الاصطناعي Gemini.
-imageUrl: /uploads/1000133886.jpg
-timestamp: 2025-09-29T13:30:00.000Z
-link: https://aistudio.google.com
-fileUrl: ""
-category: ai
+title: "Google AI Studio"
+description: "Google AI Studio هي منصة تجريبية مجانية من جوجل للمطورين والمبدعين لتجربة وبناء تطبيقات باستخدام أحدث نماذج الذكاء الاصطناعي Gemini."
+imageUrl: "https://developers.google.com/static/ai/studio/images/index/og-image-studio.png"
+timestamp: '2025-09-29T13:30:00Z'
+link: "https://ai.google.dev"
+fileUrl: "https://ai.google.dev"
+category: "general"
 ---
 ## منصة الذكاء الاصطناعي
 وهي منصة تجريبية مجانية من جوجل تتيح للمستخدمين تجربة أحدث نماذج الذكاء الاصطناعي الخاصة بها. ببساطة، هو عبارة عن "ملعب" للمطورين والمبدعين وحتى المستخدمين العاديين لاستكشاف قدرات الذكاء الاصطناعي.
@@ -14,6 +13,3 @@ category: ai
 ## ما يمكنك فعله باستخدام هذه المنصة
 إليك شرح مبسط لما يمكنك فعله باستخدام هذه المنصة:
 تجربة نماذج الذكاء الاصطناعي: تتيح لك المنصة الوصول إلى نماذج جوجل المتقدمة مثل Gemini و Veo.
-
-##كمثال
-الموقع الي تتصفح ببه مبني بالذكاء الاصطناعي فقط بدوء خبره برمجيه فقط عن طريق الاوامر 

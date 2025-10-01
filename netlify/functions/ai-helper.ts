@@ -17,7 +17,7 @@ const getGeminiPrompt = (task: AITask): string => {
         case 'summarize':
             return 'أنت خبير في تلخيص النصوص. قم بتلخيص النص التالي بشكل موجز وواضح باللغة العربية.';
         case 'reorder':
-            return 'أنت خبير في تنظيم المحتوى. أعد ترتيب النص التالي على شكل نقاط رئيسية (باستخدام علامة - قبل كل نقطة) باللغة العربية. حافظ على جوهر المحتوى الأصلي ولكن اجعله أكثر تنظيماً وسهولة في القراءة.';
+            return 'أنت خبير في تنظيم المحتوى. أعد هيكلة النص التالي باستخدام عناوين رئيسية (باستخدام ## قبل العنوان) ونقاط فرعية إذا لزم الأمر. اجعل المحتوى أكثر تنظيماً وسهولة في القراءة باللغة العربية.';
         case 'complete':
             return 'أنت كاتب محتوى خبير. أكمل النص التالي باللغة العربية بطريقة احترافية وغنية بالمعلومات، مستخدماً مصادر موثوقة. اجعل الإضافة طبيعية ومتكاملة مع النص الأصلي.';
         default:
@@ -35,7 +35,7 @@ const getCloudflarePrompt = (task: AITask, content: string): { system: string, u
         case 'reorder':
             return {
                 system: 'You are an expert content organizer who responds in Arabic.',
-                user: `Reorder the following text into main points (using a hyphen '-' before each point) in Arabic. Maintain the core content but make it more organized and readable: "${content}"`
+                user: `Restructure the following text using main headings (using "##" before the heading) and sub-points if necessary. Make the content more organized and easy to read in Arabic: "${content}"`
             };
         case 'complete':
             return {
