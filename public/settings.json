@@ -1,16 +1,17 @@
 {
   "identity": {
-    "logoUrl": "/uploads/picsum-avatar.jpeg",
-    "siteName": "techtouch0",
-    "announcementText": "محتوى إعلاني تجريبي يظهر هنا لجذب الانتباه.",
-    "announcementLink": "https://google.com",
-    "announcementLabel": "إعلان",
+    "logoUrl": "/uploads/photoroom-20240221_160131.png",
+    "siteName": "techtouch تقنية",
+    "announcementText": "اهلا بكم في موقع techtouch الجديد .. تم تكوينه بالذكاء الاصطناعي عن طريق كتابة الاوامر فقط",
+    "announcementLink": "https://t.me/techtouch7",
+    "announcementLabel": "إعلان ←",
     "announcementBgColor": "#1f2937"
   },
   "colors": {
     "header": "#1f2937",
-    "card": "rgba(31, 41, 55, 0.5)",
-    "primary": "#ef4444"
+    "card": "rgba(121, 161, 217, 0.5)",
+    "primary": "#0f3be9",
+    "siteName": "#2007f4"
   },
   "socials": {
     "facebook": "https://facebook.com",
