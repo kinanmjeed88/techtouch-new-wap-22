@@ -8,7 +8,7 @@ interface State {
   hasError: boolean;
 }
 
-// FIX: To resolve the error "Property 'props' does not exist on type 'ErrorBoundary'", the class must extend `React.Component`.
+// To resolve the error "Property 'props' does not exist on type 'ErrorBoundary'", the class must extend `React.Component`.
 class ErrorBoundary extends React.Component<ErrorBoundaryProps, State> {
   state: State = { hasError: false };
 
