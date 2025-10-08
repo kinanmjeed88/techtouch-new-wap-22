@@ -1,4 +1,3 @@
-
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
@@ -9,14 +8,18 @@ import './index.css';
 // تمت إضافة هذا الرمز لضمان حصول المستخدمين الذين لديهم عامل خدمة قديم ومعيب
 // على الإصدار الجديد من الموقع بشكل صحيح.
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations().then(function(registrations) {
-    if (registrations.length > 0) {
-      console.log('Unregistering existing Service Workers...');
-      for(const registration of registrations) {
-        registration.unregister();
-        console.log('Service Worker unregistered:', registration.scope);
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.getRegistrations().then(function(registrations) {
+      if (registrations.length > 0) {
+        console.log('Unregistering existing Service Workers...');
+        for(const registration of registrations) {
+          registration.unregister();
+          console.log('Service Worker unregistered:', registration.scope);
+        }
       }
-    }
+    }).catch(function(err) {
+      console.error('Failed to get Service Worker registrations:', err);
+    });
   });
 }
 
