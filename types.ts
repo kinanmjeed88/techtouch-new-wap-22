@@ -1,4 +1,3 @@
-
 export type Category = 'general' | 'android-apps' | 'movie-apps' | 'sports-apps' | 'games' | string;
 
 export interface Post {
@@ -11,7 +10,17 @@ export interface Post {
   timestamp: string;
   link?: string;
   fileUrl?: string;
+  youtubeUrl?: string;
+  relatedPosts?: string[];
   category: Category;
+}
+
+export interface Profile {
+  name?: string;
+  age?: number;
+  city?: string;
+  bio?: string;
+  contactLink?: string;
 }
 
 export interface SiteSettings {

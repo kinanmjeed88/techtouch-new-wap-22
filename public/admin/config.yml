@@ -44,6 +44,19 @@ collections:
               - { label: "TikTok", name: "tiktok", widget: "string", required: false }
               - { label: "YouTube", name: "youtube", widget: "string", required: false }
               - { label: "Telegram", name: "telegram", widget: "string", required: false }
+  
+  - name: "profile"
+    label: "الملف الشخصي"
+    files:
+      - file: "public/profile.json"
+        label: "بيانات الملف الشخصي"
+        name: "profile_data"
+        fields:
+          - { label: "الاسم", name: "name", widget: "string", required: false }
+          - { label: "العمر", name: "age", widget: "number", required: false }
+          - { label: "المدينة", name: "city", widget: "string", required: false }
+          - { label: "نبذة تعريفية", name: "bio", widget: "text", required: false }
+          - { label: "رابط التواصل (مثال: رابط واتساب أو تليجرام)", name: "contactLink", widget: "string", required: false }
 
   - name: "categories"
     label: "التصنيفات"
@@ -67,6 +80,7 @@ collections:
       - { label: "التاريخ والوقت", name: "timestamp", widget: "datetime", required: true }
       - { label: "رابط خارجي", name: "link", widget: "string", required: false }
       - { label: "رابط تحميل الملف", name: "fileUrl", widget: "file", required: false }
+      - { label: "رابط يوتيوب (اختياري)", name: "youtubeUrl", widget: "string", required: false }
       - label: "التصنيف"
         name: "category"
         widget: "relation"
@@ -75,4 +89,14 @@ collections:
         valueField: "id"
         displayFields: ["title"]
         required: true
+      - label: "منشورات ذات صلة (اختر حتى 5)"
+        name: "relatedPosts"
+        widget: "relation"
+        collection: "posts"
+        searchFields: ["title"]
+        valueField: "title"
+        displayFields: ["title"]
+        multiple: true
+        max: 5
+        required: false
       - { label: "المحتوى", name: "body", widget: "text", required: true }

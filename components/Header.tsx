@@ -5,18 +5,18 @@ interface HeaderProps {
   onSearch: (query: string) => void;
   logoUrl: string;
   siteName: string;
-  onGoHome: () => void;
+  onLogoClick: () => void;
   onGoToAITools: () => void;
   currentView: 'home' | 'postDetail' | 'aiTools';
 }
 
-const Header: React.FC<HeaderProps> = ({ onSearch, logoUrl, siteName, onGoHome, onGoToAITools, currentView }) => {
+const Header: React.FC<HeaderProps> = ({ onSearch, logoUrl, siteName, onLogoClick, onGoToAITools, currentView }) => {
   return (
     <header 
       className="flex flex-col items-center justify-center p-4 sm:p-6 rounded-lg shadow-lg"
       style={{ backgroundColor: 'var(--color-header-bg)' }}
     >
-      <button onClick={onGoHome} className="flex items-center space-x-4 space-x-reverse mb-4 sm:mb-6 group">
+      <button onClick={onLogoClick} className="flex items-center space-x-4 space-x-reverse mb-4 sm:mb-6 group cursor-pointer">
         {logoUrl && (
             <img
             src={logoUrl}

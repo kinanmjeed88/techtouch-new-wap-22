@@ -8,7 +8,8 @@ import PostCard from './components/PostCard';
 import Pagination from './components/Pagination';
 import SkeletonLoader from './components/SkeletonLoader';
 import AITools from './components/AITools';
-import type { Category, Post, SiteSettings } from './types';
+import ProfileModal from './components/ProfileModal';
+import type { Category, Post, SiteSettings, Profile } from './types';
 
 interface AppData {
   posts: Post[];
@@ -21,6 +22,7 @@ interface AppData {
   announcementTextColor?: string;
   colors?: SiteSettings['colors'];
   socials?: SiteSettings['socials'];
+  profile?: Profile;
 }
 
 const POSTS_PER_PAGE = 6;
@@ -37,22 +39,25 @@ const App: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<Category | 'all'>('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [settingsResponse, postsResponse, categoriesResponse] = await Promise.all([
+        const [settingsResponse, postsResponse, categoriesResponse, profileResponse] = await Promise.all([
           fetch(`/settings.json?v=${new Date().getTime()}`),
           fetch(`/posts.json?v=${new Date().getTime()}`),
           fetch(`/categories.json?v=${new Date().getTime()}`),
+          fetch(`/profile.json?v=${new Date().getTime()}`),
         ]);
 
-        if (!settingsResponse.ok || !postsResponse.ok || !categoriesResponse.ok) {
+        if (!settingsResponse.ok || !postsResponse.ok || !categoriesResponse.ok || !profileResponse.ok) {
           throw new Error(`خطأ في تحميل البيانات`);
         }
         const settingsData = await settingsResponse.json();
         const postsData = await postsResponse.json();
         const categoriesData = await categoriesResponse.json();
+        const profileData = await profileResponse.json();
         
         const identity = settingsData.identity || {};
         const colors = settingsData.colors;
@@ -69,6 +74,7 @@ const App: React.FC = () => {
           announcementTextColor: identity.announcementTextColor,
           colors: colors,
           socials: socials,
+          profile: profileData,
         });
         setCategories(categoriesData.categories || []);
 
@@ -133,7 +139,7 @@ const App: React.FC = () => {
     return () => {
       window.removeEventListener('popstate', handleLocationChange);
     };
-  }, [appData]);
+  }, [appData, selectedPost?.id]);
 
   const handleSelectPost = (post: Post) => {
     const newPath = `/post/${post.id}/${post.slug}`;
@@ -308,7 +314,7 @@ const App: React.FC = () => {
           onSearch={handleSearchChange} 
           logoUrl={appData.logoUrl} 
           siteName={appData.siteName}
-          onGoHome={handleGoHome}
+          onLogoClick={() => setIsProfileModalOpen(true)}
           onGoToAITools={handleGoToAITools}
           currentView={currentView}
         />
@@ -322,7 +328,13 @@ const App: React.FC = () => {
 
         <main className="mt-8">
           {currentView === 'postDetail' && selectedPost ? (
-            <PostDetail post={selectedPost} onBack={handleGoHome} siteName={appData.siteName} />
+            <PostDetail 
+                post={selectedPost} 
+                onBack={handleGoHome} 
+                siteName={appData.siteName}
+                allPosts={appData.posts}
+                onSelectPost={handleSelectPost}
+            />
           ) : currentView === 'aiTools' ? (
             <AITools />
           ) : (
@@ -332,6 +344,14 @@ const App: React.FC = () => {
       </div>
       <Footer socials={appData.socials} />
       <FloatingButtons onGoHome={handleGoHome} showHomeButton={currentView !== 'home'} />
+
+      {isProfileModalOpen && appData.profile && (
+        <ProfileModal 
+          profile={appData.profile}
+          logoUrl={appData.logoUrl}
+          onClose={() => setIsProfileModalOpen(false)}
+        />
+      )}
     </div>
   );
 };

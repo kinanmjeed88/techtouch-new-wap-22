@@ -1,14 +1,30 @@
 import React, { useState } from 'react';
 import type { Post } from '../types';
 import { FacebookIcon, TwitterIcon, WhatsAppIcon, SparklesIcon, TelegramIcon, InfoIcon } from './Icons';
+import RelatedPostsSlider from './RelatedPostsSlider';
 
 interface PostDetailProps {
   post: Post;
   onBack: () => void;
   siteName: string;
+  allPosts: Post[];
+  onSelectPost: (post: Post) => void;
 }
 
-const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, siteName }) => {
+const getYouTubeID = (url: string): string | null => {
+  try {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = new URL(url).searchParams.get('v') || url.match(regExp)?.[2];
+    return match && match.length === 11 ? match : null;
+  } catch (e) {
+    // Fallback for non-standard URLs
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return match && match[2].length === 11 ? match[2] : null;
+  }
+};
+
+const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, siteName, allPosts, onSelectPost }) => {
   const [summary, setSummary] = useState<string | null>(null);
   const [isSummarizing, setIsSummarizing] = useState(false);
   const [summaryError, setSummaryError] = useState<string | null>(null);
@@ -142,6 +158,11 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, siteName }) => {
     }
   };
 
+  const videoId = post.youtubeUrl ? getYouTubeID(post.youtubeUrl) : null;
+  const relatedPostObjects = post.relatedPosts
+    ? allPosts.filter(p => post.relatedPosts.includes(p.title) && p.id !== post.id)
+    : [];
+
 
   return (
     <div className="p-4 sm:p-6 rounded-lg shadow-xl" style={{ backgroundColor: 'var(--color-header-bg)'}}>
@@ -158,6 +179,22 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, siteName }) => {
         </div>
         
         {post.imageUrl && <img src={post.imageUrl} alt={post.title} className="w-full h-auto max-h-[300px] sm:max-h-[500px] object-cover rounded-lg mb-6 shadow-lg" />}
+        
+        {videoId && (
+          <div className="my-6">
+            <h2 className="text-xl sm:text-2xl font-bold mb-4" style={{ color: 'var(--color-primary-focus)' }}>شاهد الفيديو</h2>
+            <div className="relative h-0 pb-[56.25%]"> {/* 16:9 Aspect Ratio */}
+              <iframe
+                className="absolute top-0 left-0 w-full h-full rounded-lg shadow-lg"
+                src={`https://www.youtube.com/embed/${videoId}`}
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            </div>
+          </div>
+        )}
         
         <div className="prose prose-invert max-w-none text-gray-300 text-sm sm:text-base leading-relaxed" dangerouslySetInnerHTML={{ __html: processContent(post.content) }} />
 
@@ -293,6 +330,12 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, siteName }) => {
                 </button>
             </div>
         </div>
+        
+        {relatedPostObjects.length > 0 && (
+          <div className="mt-8 pt-6 border-t border-gray-700">
+            <RelatedPostsSlider posts={relatedPostObjects} onSelectPost={onSelectPost} />
+          </div>
+        )}
       </article>
     </div>
   );
