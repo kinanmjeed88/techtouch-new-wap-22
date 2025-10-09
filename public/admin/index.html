@@ -248,5 +248,130 @@
         setTimeout(addAiButtons, 1500);
     });
   </script>
+  
+  <!-- Backup and Restore Script -->
+  <script>
+    const addBackupRestoreUI = () => {
+      // Check if the UI has already been added
+      if (document.getElementById('backup-restore-container')) {
+        return;
+      }
+
+      const sidebar = document.querySelector('div[class*="Sidebar-container-"]');
+      if (!sidebar) {
+        return; // CMS UI not ready yet
+      }
+
+      const container = document.createElement('div');
+      container.id = 'backup-restore-container';
+      container.style.padding = '10px 15px';
+      container.style.marginTop = '10px';
+      container.style.borderTop = '1px solid #4a5568';
+      container.innerHTML = `
+        <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 12px; color: #e5e7eb;">النسخ الاحتياطي والاستعادة</h3>
+        <a 
+          href="/.netlify/functions/backup" 
+          download="techtouch0-backup-${new Date().toISOString().split('T')[0]}.json"
+          style="display: block; width: 100%; text-align: center; background-color: #374151; color: white; padding: 10px 12px; border-radius: 5px; cursor: pointer; text-decoration: none; margin-bottom: 10px; font-size: 14px; transition: background-color 0.2s;"
+          onmouseover="this.style.backgroundColor='#4b5563'"
+          onmouseout="this.style.backgroundColor='#374151'"
+        >
+          إنشاء وتنزيل نسخة احتياطية
+        </a>
+        <div style="position: relative;">
+          <input type="file" id="restore-input" accept=".json" style="display: none;">
+          <button 
+            id="restore-button" 
+            style="width: 100%; text-align: center; background-color: #dc2626; color: white; padding: 10px 12px; border-radius: 5px; cursor: pointer; border: none; font-size: 14px; font-weight: bold; transition: background-color 0.2s;"
+            onmouseover="this.style.backgroundColor='#b91c1c'"
+            onmouseout="this.style.backgroundColor='#dc2626'"
+          >
+            استعادة من ملف
+          </button>
+        </div>
+        <div id="restore-status" style="margin-top: 12px; font-size: 14px; text-align: center; min-height: 20px;"></div>
+      `;
+
+      sidebar.appendChild(container);
+
+      const restoreInput = document.getElementById('restore-input');
+      const restoreButton = document.getElementById('restore-button');
+      const restoreStatus = document.getElementById('restore-status');
+
+      restoreButton.addEventListener('click', () => {
+        restoreInput.click();
+      });
+
+      restoreInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const isConfirmed = confirm('هل أنت متأكد؟ سيتم حذف جميع المنشورات والتصنيفات والإعدادات الحالية واستبدالها بالبيانات من ملف النسخة الاحتياطية. لا يمكن التراجع عن هذا الإجراء.');
+        if (!isConfirmed) {
+          restoreInput.value = ''; // Reset file input
+          return;
+        }
+
+        restoreStatus.textContent = '...جاري الاستعادة، قد يستغرق هذا بعض الوقت';
+        restoreStatus.style.color = '#9ca3af';
+        restoreButton.disabled = true;
+        restoreButton.style.opacity = '0.5';
+        restoreButton.style.cursor = 'not-allowed';
+
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          try {
+            const backupData = JSON.parse(e.target.result);
+            
+            const response = await fetch('/.netlify/functions/restore', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(backupData),
+            });
+
+            const responseData = await response.json();
+            if (!response.ok) {
+              throw new Error(responseData.error || 'فشل عملية الاستعادة.');
+            }
+
+            restoreStatus.textContent = 'تمت الاستعادة بنجاح! سيتم إعادة تحميل الصفحة.';
+            restoreStatus.style.color = '#34d399';
+            alert('تمت الاستعادة بنجاح! سيتم إعادة تحميل لوحة التحكم الآن.');
+            window.location.reload();
+            
+          } catch (error) {
+            console.error('Restore Error:', error);
+            restoreStatus.textContent = `خطأ: ${error.message}`;
+            restoreStatus.style.color = '#f87171';
+          } finally {
+            restoreButton.disabled = false;
+            restoreButton.style.opacity = '1';
+            restoreButton.style.cursor = 'pointer';
+            restoreInput.value = ''; // Reset file input
+          }
+        };
+        reader.onerror = () => {
+          restoreStatus.textContent = 'خطأ في قراءة الملف.';
+          restoreStatus.style.color = '#f87171';
+          restoreButton.disabled = false;
+          restoreButton.style.opacity = '1';
+          restoreButton.style.cursor = 'pointer';
+          restoreInput.value = '';
+        };
+        reader.readAsText(file);
+      });
+    };
+
+    const backupObserver = new MutationObserver(() => {
+      if (document.querySelector('div[class*="Sidebar-container-"]')) {
+        addBackupRestoreUI();
+      }
+    });
+
+    backupObserver.observe(document.body, { childList: true, subtree: true });
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(addBackupRestoreUI, 2000);
+    });
+  </script>
 </body>
 </html>
