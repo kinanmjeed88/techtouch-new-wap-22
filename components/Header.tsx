@@ -7,7 +7,7 @@ interface HeaderProps {
   siteName: string;
   onLogoClick: () => void;
   onGoToAITools: () => void;
-  currentView: 'home' | 'postDetail' | 'aiTools';
+  currentView: 'home' | 'postDetail' | 'aiTools' | 'backup';
 }
 
 const Header: React.FC<HeaderProps> = ({ onSearch, logoUrl, siteName, onLogoClick, onGoToAITools, currentView }) => {

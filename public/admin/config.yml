@@ -100,17 +100,3 @@ collections:
         max: 5
         required: false
       - { label: "المحتوى", name: "body", widget: "text", required: true }
-
-  - name: "backup"
-    label: "النسخ الاحتياطي"
-    files:
-      - file: "content/backup-info.md"
-        label: "معلومات النسخ الاحتياطي"
-        name: "backup_info"
-        fields:
-          - name: "instructions"
-            label: "كيفية أخذ نسخة احتياطية"
-            widget: "markdown"
-            default: "**النسخ الاحتياطي يعتمد على Git.**\n\nجميع محتويات الموقع (المنشورات، الصور، الإعدادات) محفوظة في مستودع Git. لأخذ نسخة احتياطية كاملة، يجب عليك نسخ (clone) المستودع إلى جهازك المحلي. تواصل مع المطور لمعرفة رابط المستودع إذا لم يكن لديك."
-            readonly: true
-            minimal: true

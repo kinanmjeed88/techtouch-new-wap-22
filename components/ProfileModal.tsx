@@ -1,14 +1,15 @@
 import React from 'react';
 import type { Profile } from '../types';
-import { SendIcon } from './Icons';
+import { SendIcon, BackupIcon } from './Icons';
 
 interface ProfileModalProps {
   profile: Profile;
   logoUrl: string;
   onClose: () => void;
+  onGoToBackup: () => void;
 }
 
-const ProfileModal: React.FC<ProfileModalProps> = ({ profile, logoUrl, onClose }) => {
+const ProfileModal: React.FC<ProfileModalProps> = ({ profile, logoUrl, onClose, onGoToBackup }) => {
   return (
     <div
       className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50 animate-fadeIn"
@@ -67,6 +68,14 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ profile, logoUrl, onClose }
             <span>تواصل معي</span>
           </a>
         )}
+
+        <button
+            onClick={onGoToBackup}
+            className="inline-flex items-center justify-center gap-2 w-full bg-gray-600 hover:bg-gray-500 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 mt-2"
+        >
+            <BackupIcon className="w-5 h-5" />
+            <span>النسخ الاحتياطي والاستعادة</span>
+        </button>
       </div>
     </div>
   );

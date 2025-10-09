@@ -9,6 +9,7 @@ import Pagination from './components/Pagination';
 import SkeletonLoader from './components/SkeletonLoader';
 import AITools from './components/AITools';
 import ProfileModal from './components/ProfileModal';
+import Backup from './components/Backup';
 import type { Category, Post, SiteSettings, Profile } from './types';
 
 interface AppData {
@@ -33,7 +34,7 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
-  const [currentView, setCurrentView] = useState<'home' | 'postDetail' | 'aiTools'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'postDetail' | 'aiTools' | 'backup'>('home');
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<Category | 'all'>('all');
@@ -124,6 +125,9 @@ const App: React.FC = () => {
       } else if (path === '/ai-tools') {
         setSelectedPost(null);
         setCurrentView('aiTools');
+      } else if (path === '/backup') {
+        setSelectedPost(null);
+        setCurrentView('backup');
       } else {
         setSelectedPost(null);
         setCurrentView('home');
@@ -159,6 +163,13 @@ const App: React.FC = () => {
     window.history.pushState({}, '', '/ai-tools');
     setSelectedPost(null);
     setCurrentView('aiTools');
+    window.scrollTo(0, 0);
+  };
+  
+  const handleGoToBackup = () => {
+    window.history.pushState({}, '', '/backup');
+    setSelectedPost(null);
+    setCurrentView('backup');
     window.scrollTo(0, 0);
   };
 
@@ -337,6 +348,8 @@ const App: React.FC = () => {
             />
           ) : currentView === 'aiTools' ? (
             <AITools />
+          ) : currentView === 'backup' ? (
+            <Backup />
           ) : (
             renderHomeView()
           )}
@@ -350,6 +363,10 @@ const App: React.FC = () => {
           profile={appData.profile}
           logoUrl={appData.logoUrl}
           onClose={() => setIsProfileModalOpen(false)}
+          onGoToBackup={() => {
+            setIsProfileModalOpen(false);
+            handleGoToBackup();
+          }}
         />
       )}
     </div>
