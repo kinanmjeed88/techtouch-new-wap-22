@@ -1,14 +1,11 @@
 ---
 title: تطبيق تحرير الصور الاحترافي
 description: أفضل تطبيق لتعديل الصور وإضافة فلاتر رائعة بكل سهولة.
-imageUrl: /uploads/1000133462.jpg
-timestamp: 2024-07-28T10:00:00Z
-link: ""
-fileUrl: ""
-category: Publications
-relatedPosts:
-  - تطبيق تحرير الصور الاحترافي
-  - Google AI Studio
+imageUrl: "/uploads/picsum1.jpeg"
+timestamp: '2024-07-28T10:00:00Z'
+link: https://example.com/app1
+fileUrl: "/uploads/app1.apk"
+category: android-apps
 ---
 هذا التطبيق يوفر مجموعة واسعة من الأدوات الاحترافية لتعديل الصور. يمكنك التحكم في الإضاءة، الألوان، التباين، وإضافة تأثيرات فنية مذهلة. الواجهة سهلة الاستخدام ومناسبة للمبتدئين والمحترفين على حد سواء.
 

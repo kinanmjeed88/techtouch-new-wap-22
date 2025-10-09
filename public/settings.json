@@ -1,21 +1,21 @@
 {
   "identity": {
-    "logoUrl": "/uploads/1000134439.png",
-    "siteName": "techtouch تقنية",
-    "announcementText": "مرحبا بكم في صفحة techtouch0 الجديدة مبنية بواسطة الذكاء الاصطناعي فقط",
-    "announcementLink": "https://t.me/techtouch7",
-    "announcementLabel": "إعلان 📢",
+    "logoUrl": "/uploads/picsum-avatar.jpeg",
+    "siteName": "techtouch0",
+    "announcementText": "محتوى إعلاني تجريبي يظهر هنا لجذب الانتباه.",
+    "announcementLink": "https://google.com",
+    "announcementLabel": "إعلان",
     "announcementBgColor": "#1f2937"
   },
   "colors": {
     "header": "#1f2937",
-    "card": "rgba(103, 148, 210, 0.5)",
+    "card": "rgba(31, 41, 55, 0.5)",
     "primary": "#ef4444"
   },
   "socials": {
     "facebook": "https://facebook.com",
-    "tiktok": "",
-    "youtube": "",
-    "telegram": "https://t.me/techtouch7"
+    "tiktok": "https://tiktok.com",
+    "youtube": "https://youtube.com",
+    "telegram": "https://telegram.org"
   }
 }

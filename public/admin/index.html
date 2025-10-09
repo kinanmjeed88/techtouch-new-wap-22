@@ -6,6 +6,82 @@
   <title>Content Manager</title>
   <!-- Netlify Identity Widget -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <style>
+    @media (max-width: 768px) {
+      /* General layout */
+      [class^="App-main-"] {
+        flex-direction: column;
+        height: auto;
+      }
+
+      /* Sidebar */
+      [class^="Sidebar-container-"] {
+        position: static;
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #e0e0e0;
+        height: auto;
+        max-height: 40vh;
+        overflow-y: auto;
+      }
+
+      /* Main content area */
+      [class^="Collection-root-"], [class^="Editor-root-"] {
+        padding: 10px;
+      }
+      
+      [class^="Collection-main-"], [class^="Editor-main-"] {
+          width: 100%;
+      }
+
+      /* Collection Top Bar */
+      [class^="Collection-top-root-"] {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 10px;
+      }
+
+      [class^="Search-input-"] {
+          width: 100%;
+          margin: 0 0 10px 0;
+      }
+
+      [class^="Collection-top-actions-"] {
+          display: flex;
+          flex-direction: column;
+      }
+
+      [class^="Collection-top-actions-"] > [class^="Button-button-"] {
+          width: 100%;
+          margin-bottom: 5px;
+          justify-content: center;
+      }
+
+      /* Editor Fields */
+      [class^="Field-root-"] {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      [class^="Field-root-"] > [class^="Label-label-"] {
+          margin-bottom: 5px;
+      }
+
+      /* Ensure textareas and inputs are full-width */
+      textarea, input[type="text"], input[type="string"] {
+          width: 100% !important;
+      }
+
+      /* AI Helper Buttons */
+      #ai-helper-buttons {
+          flex-direction: column;
+      }
+      #ai-helper-buttons button {
+          width: 100%;
+          justify-content: center;
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- يتضمن سكريبت Netlify CMS -->
@@ -34,6 +110,7 @@
       if (!container) return;
 
       const buttonContainer = document.createElement('div');
+      buttonContainer.id = 'ai-helper-buttons';
       buttonContainer.style.display = 'flex';
       buttonContainer.style.gap = '10px';
       buttonContainer.style.marginBottom = '10px';
