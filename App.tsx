@@ -162,13 +162,6 @@ const App: React.FC = () => {
     window.scrollTo(0, 0);
   };
   
-  const handleGoToAdminPanel = () => {
-    window.history.pushState({}, '', '/admin-panel');
-    setSelectedPost(null);
-    setCurrentView('adminPanel');
-    window.scrollTo(0, 0);
-  };
-
   const handleFilterChange = (category: Category | 'all') => {
     setActiveCategory(category);
     setCurrentPage(1);
@@ -351,7 +344,6 @@ const App: React.FC = () => {
           siteName={appData.siteName}
           onLogoClick={() => setIsProfileModalOpen(true)}
           onGoToAITools={handleGoToAITools}
-          onGoToAdminPanel={handleGoToAdminPanel}
           currentView={currentView}
         />
         <AnnouncementBar 

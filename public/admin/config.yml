@@ -58,6 +58,21 @@ collections:
           - { label: "نبذة تعريفية", name: "bio", widget: "text", required: false }
           - { label: "رابط التواصل (مثال: رابط واتساب أو تليجرام)", name: "contactLink", widget: "string", required: false }
 
+  - name: "backup"
+    label: "النسخ الاحتياطي والاستعادة"
+    file: "content/_backup_placeholder.md"
+    fields:
+      - name: "instructions"
+        label: "الوصول إلى الأداة"
+        widget: "markdown"
+        default: |
+          للوصول إلى أداة النسخ الاحتياطي والاستعادة، **[انقر هنا لفتح الأداة في علامة تبويب جديدة](/admin-panel)**.
+          
+          ### تعليمات
+          - **النسخ الاحتياطي**: قم بتنزيل ملف ZIP يحتوي على جميع منشوراتك وإعداداتك.
+          - **الاستعادة**: اتبع التعليمات الموجودة في الصفحة لاستعادة المحتوى من ملف ZIP.
+        readonly: true
+
   - name: "categories"
     label: "التصنيفات"
     folder: "content/categories"
