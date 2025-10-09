@@ -6,7 +6,6 @@ import matter from 'gray-matter';
 const CWD = process.cwd();
 const POSTS_DIR = path.join(CWD, 'content/posts');
 const CATEGORIES_DIR = path.join(CWD, 'content/categories');
-
 const POSTS_OUTPUT_PATH = path.join(CWD, 'public/posts.json');
 const CATEGORIES_OUTPUT_PATH = path.join(CWD, 'public/categories.json');
 

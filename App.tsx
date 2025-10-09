@@ -33,7 +33,7 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
-  const [currentView, setCurrentView] = useState<'home' | 'postDetail' | 'aiTools' | 'adminPanel'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'postDetail' | 'aiTools'>('home');
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<Category | 'all'>('all');
@@ -111,25 +111,26 @@ const App: React.FC = () => {
         const postId = parseInt(postMatch[1], 10);
         const post = appData.posts.find(p => p.id === postId);
         if (post) {
+          if (selectedPost?.id !== post.id) {
             setSelectedPost(post);
-            setCurrentView('postDetail');
+          }
+          setCurrentView('postDetail');
         } else {
-            window.history.replaceState({}, '', '/');
-            setSelectedPost(null);
-            setCurrentView('home');
+          // Post not found, go home
+          window.history.replaceState({}, '', '/');
+          setSelectedPost(null);
+          setCurrentView('home');
         }
       } else if (path === '/ai-tools') {
         setSelectedPost(null);
         setCurrentView('aiTools');
-      } else if (path === '/admin-panel') {
-        setSelectedPost(null);
-        setCurrentView('adminPanel');
       } else {
         setSelectedPost(null);
         setCurrentView('home');
       }
     };
 
+    // Initial load check
     if(appData) {
       handleLocationChange();
     }
@@ -138,7 +139,7 @@ const App: React.FC = () => {
     return () => {
       window.removeEventListener('popstate', handleLocationChange);
     };
-  }, [appData]);
+  }, [appData, selectedPost?.id]);
 
   const handleSelectPost = (post: Post) => {
     const newPath = `/post/${post.id}/${post.slug}`;
@@ -160,14 +161,7 @@ const App: React.FC = () => {
     setCurrentView('aiTools');
     window.scrollTo(0, 0);
   };
-  
-  const handleGoToAdminPanel = () => {
-    window.history.pushState({}, '', '/admin-panel');
-    setSelectedPost(null);
-    setCurrentView('adminPanel');
-    window.scrollTo(0, 0);
-  };
-  
+
   const handleFilterChange = (category: Category | 'all') => {
     setActiveCategory(category);
     setCurrentPage(1);
@@ -231,33 +225,6 @@ const App: React.FC = () => {
       )}
     </div>
   );
-  
-  const AdminPanel = () => (
-    <div className="animate-fadeIn">
-        <button onClick={handleGoHome} className="mb-6 text-sm sm:text-base hover:text-red-300 transition-colors duration-300 font-semibold" style={{ color: 'var(--color-primary-focus)' }}>
-            &larr; العودة إلى الصفحة الرئيسية
-        </button>
-        <div className="p-4 sm:p-0">
-            <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8">لوحة التحكم</h2>
-            <div className="max-w-3xl mx-auto">
-                <div className="bg-gray-800/50 p-6 rounded-lg border border-gray-700">
-                    <h3 className="text-xl font-semibold mb-3 text-red-400" style={{ color: 'var(--color-primary-focus)' }}>إدارة المحتوى</h3>
-                    <p className="text-gray-300 mb-6">
-                        من هنا يمكنك إضافة وتعديل المنشورات، التصنيفات، وإعدادات الموقع العامة من خلال واجهة مدير المحتوى.
-                    </p>
-                    <a
-                        href="/admin/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-block w-full text-center bg-gray-600 hover:bg-gray-500 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105"
-                    >
-                        الانتقال إلى مدير المحتوى
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-  );
 
   if (error) {
     return <div className="flex items-center justify-center min-h-screen text-red-500 text-2xl">حدث خطأ: {error}</div>;
@@ -273,7 +240,7 @@ const App: React.FC = () => {
     );
   }
   
-  if (!appData) return null;
+  if (!appData) return null; // Return null while waiting for routing effect after data load
 
   const CategoryTabs = () => {
     const activeCategoryTitle = useMemo(() => {
@@ -349,7 +316,6 @@ const App: React.FC = () => {
           siteName={appData.siteName}
           onLogoClick={() => setIsProfileModalOpen(true)}
           onGoToAITools={handleGoToAITools}
-          onGoToAdminPanel={handleGoToAdminPanel}
           currentView={currentView}
         />
         <AnnouncementBar 
@@ -371,8 +337,6 @@ const App: React.FC = () => {
             />
           ) : currentView === 'aiTools' ? (
             <AITools />
-          ) : currentView === 'adminPanel' ? (
-            <AdminPanel />
           ) : (
             renderHomeView()
           )}

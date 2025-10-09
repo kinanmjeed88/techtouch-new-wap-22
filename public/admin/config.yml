@@ -15,30 +15,36 @@ collections:
         label: "الإعدادات العامة"
         name: "general_settings"
         fields:
-          - { label: "الهوية والإعلانات", name: "identity", widget: "object", fields: [
-              { label: "شعار الموقع (الصورة الشخصية)", name: "logoUrl", widget: "image", required: true },
-              { label: "اسم الموقع", name: "siteName", widget: "string", default: "techtouch0", required: true },
-              { label: "نص الإعلان", name: "announcementText", widget: "string", required: true },
-              { label: "لون نص الإعلان", name: "announcementTextColor", widget: "color", required: false, default: "#D1D5DB" },
-              { label: "رابط الإعلان (اختياري)", name: "announcementLink", widget: "string", required: false },
-              { label: "كلمة الإعلان (مثال: إعلان, جديد)", name: "announcementLabel", widget: "string", default: "إعلان", required: false },
-              { label: "لون خلفية شريط الإعلان", name: "announcementBgColor", widget: "color", required: false, default: "#1f2937" }
-            ]}
-          - { label: "ألوان الموقع", name: "colors", widget: "object", fields: [
-              { label: "خلفية الرأسية (Header)", name: "header", widget: "color", required: true },
-              { label: "خلفية بطاقة المنشور", name: "card", widget: "color", required: true },
-              { label: "اللون الرئيسي (للحواف والأزرار)", name: "primary", widget: "color", required: true },
-              { label: "لون اسم الموقع", name: "siteName", widget: "color", required: false, default: "#FFFFFF" },
-              { label: "لون عنوان بطاقة المنشور", name: "cardTitle", widget: "color", required: false, default: "#FFFFFF" },
-              { label: "لون نص بطاقة المنشور", name: "cardDescription", widget: "color", required: false, default: "#D1D5DB" }
-            ]}
-          - { label: "روابط التواصل الاجتماعي", name: "socials", widget: "object", fields: [
-              { label: "Facebook", name: "facebook", widget: "string", required: false },
-              { label: "TikTok", name: "tiktok", widget: "string", required: false },
-              { label: "YouTube", name: "youtube", widget: "string", required: false },
-              { label: "Telegram", name: "telegram", widget: "string", required: false }
-            ]}
-
+          - label: "الهوية والإعلانات"
+            name: "identity"
+            widget: "object"
+            fields:
+              - { label: "شعار الموقع (الصورة الشخصية)", name: "logoUrl", widget: "image", required: true }
+              - { label: "اسم الموقع", name: "siteName", widget: "string", default: "techtouch0", required: true }
+              - { label: "نص الإعلان", name: "announcementText", widget: "string", required: true }
+              - { label: "لون نص الإعلان", name: "announcementTextColor", widget: "color", required: false, default: "#D1D5DB" }
+              - { label: "رابط الإعلان (اختياري)", name: "announcementLink", widget: "string", required: false }
+              - { label: "كلمة الإعلان (مثال: إعلان, جديد)", name: "announcementLabel", widget: "string", default: "إعلان", required: false }
+              - { label: "لون خلفية شريط الإعلان", name: "announcementBgColor", widget: "color", required: false, default: "#1f2937" }
+          - label: "ألوان الموقع"
+            name: "colors"
+            widget: "object"
+            fields:
+              - { label: "خلفية الرأسية (Header)", name: "header", widget: "color", required: true }
+              - { label: "خلفية بطاقة المنشور", name: "card", widget: "color", required: true }
+              - { label: "اللون الرئيسي (للحواف والأزرار)", name: "primary", widget: "color", required: true }
+              - { label: "لون اسم الموقع", name: "siteName", widget: "color", required: false, default: "#FFFFFF" }
+              - { label: "لون عنوان بطاقة المنشور", name: "cardTitle", widget: "color", required: false, default: "#FFFFFF" }
+              - { label: "لون نص بطاقة المنشور", name: "cardDescription", widget: "color", required: false, default: "#D1D5DB" }
+          - label: "روابط التواصل الاجتماعي"
+            name: "socials"
+            widget: "object"
+            fields:
+              - { label: "Facebook", name: "facebook", widget: "string", required: false }
+              - { label: "TikTok", name: "tiktok", widget: "string", required: false }
+              - { label: "YouTube", name: "youtube", widget: "string", required: false }
+              - { label: "Telegram", name: "telegram", widget: "string", required: false }
+  
   - name: "profile"
     label: "الملف الشخصي"
     files:

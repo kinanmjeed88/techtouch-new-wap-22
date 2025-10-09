@@ -15,15 +15,6 @@ export interface Post {
   category: Category;
 }
 
-// Fix: Added the missing 'Collection' type definition used by CollectionCard and CollectionDetail.
-export interface Collection {
-  id: number;
-  title: string;
-  description: string;
-  imageUrl?: string;
-  posts: number[]; // An array of Post IDs
-}
-
 export interface Profile {
   name?: string;
   age?: number;

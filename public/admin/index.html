@@ -6,6 +6,121 @@
   <title>Content Manager</title>
   <!-- Netlify Identity Widget -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <style>
+    /*
+      CSS Rules for making Netlify CMS responsive on small screens.
+      Version 3: More aggressive and specific selectors using !important to 
+      ensure these styles override the default CMS styles.
+    */
+    @media (max-width: 767px) {
+      
+      /* Main layout: force vertical stacking */
+      div[class*="App-main-"] {
+        flex-direction: column !important;
+        height: auto !important;
+      }
+
+      /* Sidebar: move to top, make scrollable */
+      div[class*="Sidebar-container-"] {
+        position: relative !important;
+        width: 100% !important;
+        height: auto !important;
+        max-height: 40vh !important; /* Limit height to 40% of viewport */
+        overflow-y: auto !important;
+        border-right: none !important;
+        border-bottom: 2px solid #ccc !important;
+        margin-bottom: 15px !important;
+      }
+
+      /* Content Area: ensure it takes full width */
+      div[class*="Collection-root-"], 
+      div[class*="Editor-root-"] {
+        padding: 10px !important;
+        width: 100% !important;
+      }
+      
+      /* Collection Table: Allow horizontal scrolling */
+      div[class*="Collection-main-"] {
+        width: 100% !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+      }
+      table[class*="Table-table-"] {
+        min-width: 600px !important; /* Force a min-width to trigger scroll */
+      }
+
+      /* Top Bar: stack controls vertically */
+      div[class*="Collection-top-root-"] {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+        padding: 10px !important;
+      }
+
+      div[class*="Search-input-"] {
+        width: 100% !important;
+        margin: 0 !important;
+      }
+
+      div[class*="Collection-top-actions-"] {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 10px !important;
+      }
+      
+      /* Top Bar Buttons: make them full-width */
+      div[class*="Collection-top-actions-"] button,
+      a[class*="Button-button-"] {
+        width: 100% !important;
+        justify-content: center !important;
+        margin: 0 !important;
+      }
+      
+      /* Editor Fields: Stack label on top of input */
+      div[class*="Field-root-"] {
+        flex-direction: column !important;
+        align-items: stretch !important;
+      }
+      
+      div[class*="Field-root-"] > label[class*="Label-label-"] {
+        margin-bottom: 8px !important;
+        text-align: right !important; /* RTL support for labels */
+        width: 100% !important;
+      }
+
+      /* Ensure form elements are full-width */
+      textarea, input[type="text"], input[type="string"], .public-DraftEditor-content {
+        width: 100% !important;
+      }
+
+      /* AI Helper Buttons in CMS: Stack vertically */
+      #ai-helper-buttons {
+        flex-direction: column !important;
+        gap: 8px !important;
+        margin-top: 10px !important;
+      }
+      #ai-helper-buttons button {
+        width: 100% !important;
+        justify-content: center !important;
+      }
+
+      /* Editor Toolbar: Improve spacing on mobile */
+      div[class*="Editor-toolbar-"] {
+          padding: 5px !important;
+          flex-wrap: wrap !important; /* Allow toolbar buttons to wrap */
+      }
+      
+      div[class*="EditorControl-root-"] {
+          padding: 6px !important;
+      }
+
+      /* Hide login page illustration on small screens */
+      div[class*="Login-logo-"] {
+        display: none !important;
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- يتضمن سكريبت Netlify CMS -->
@@ -34,6 +149,7 @@
       if (!container) return;
 
       const buttonContainer = document.createElement('div');
+      buttonContainer.id = 'ai-helper-buttons';
       buttonContainer.style.display = 'flex';
       buttonContainer.style.gap = '10px';
       buttonContainer.style.marginBottom = '10px';
@@ -131,6 +247,130 @@
     document.addEventListener('DOMContentLoaded', () => {
         setTimeout(addAiButtons, 1500);
     });
+  </script>
+  
+  <!-- Backup and Restore Script -->
+  <script>
+    const addBackupRestoreUI = () => {
+      // 1. Check if the UI is already present. If so, our job is done for this check.
+      if (document.getElementById('backup-restore-container')) {
+        return;
+      }
+
+      // 2. Find the sidebar. If not found, exit and wait for the next check.
+      const sidebar = document.querySelector('div[class*="Sidebar-container-"]');
+      if (!sidebar) {
+        return;
+      }
+
+      // 3. If sidebar exists but our UI doesn't, create and inject it.
+      const container = document.createElement('div');
+      container.id = 'backup-restore-container';
+      container.style.padding = '10px 15px';
+      container.style.marginTop = '10px';
+      container.style.borderTop = '1px solid #4a5568';
+      container.innerHTML = `
+        <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 12px; color: #e5e7eb;">النسخ الاحتياطي والاستعادة</h3>
+        <a 
+          href="/.netlify/functions/backup" 
+          download="techtouch0-backup-${new Date().toISOString().split('T')[0]}.json"
+          style="display: block; width: 100%; text-align: center; background-color: #374151; color: white; padding: 10px 12px; border-radius: 5px; cursor: pointer; text-decoration: none; margin-bottom: 10px; font-size: 14px; transition: background-color 0.2s;"
+          onmouseover="this.style.backgroundColor='#4b5563'"
+          onmouseout="this.style.backgroundColor='#374151'"
+        >
+          إنشاء وتنزيل نسخة احتياطية
+        </a>
+        <div style="position: relative;">
+          <input type="file" id="restore-input" accept=".json" style="display: none;">
+          <button 
+            id="restore-button" 
+            style="width: 100%; text-align: center; background-color: #dc2626; color: white; padding: 10px 12px; border-radius: 5px; cursor: pointer; border: none; font-size: 14px; font-weight: bold; transition: background-color 0.2s;"
+            onmouseover="this.style.backgroundColor='#b91c1c'"
+            onmouseout="this.style.backgroundColor='#dc2626'"
+          >
+            استعادة من ملف
+          </button>
+        </div>
+        <div id="restore-status" style="margin-top: 12px; font-size: 14px; text-align: center; min-height: 20px;"></div>
+      `;
+
+      sidebar.appendChild(container);
+
+      const restoreInput = document.getElementById('restore-input');
+      const restoreButton = document.getElementById('restore-button');
+      const restoreStatus = document.getElementById('restore-status');
+
+      restoreButton.addEventListener('click', () => {
+        restoreInput.click();
+      });
+
+      restoreInput.addEventListener('change', (event) => {
+        const file = (event.target as HTMLInputElement).files[0];
+        if (!file) return;
+
+        const isConfirmed = confirm('هل أنت متأكد؟ سيتم حذف جميع المنشورات والتصنيفات والإعدادات الحالية واستبدالها بالبيانات من ملف النسخة الاحتياطية. لا يمكن التراجع عن هذا الإجراء.');
+        if (!isConfirmed) {
+          (event.target as HTMLInputElement).value = ''; // Reset file input
+          return;
+        }
+
+        restoreStatus.textContent = '...جاري الاستعادة، قد يستغرق هذا بعض الوقت';
+        restoreStatus.style.color = '#9ca3af';
+        restoreButton.disabled = true;
+        restoreButton.style.opacity = '0.5';
+        restoreButton.style.cursor = 'not-allowed';
+
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          try {
+            const backupData = JSON.parse(e.target.result as string);
+            
+            const response = await fetch('/.netlify/functions/restore', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(backupData),
+            });
+
+            const responseData = await response.json();
+            if (!response.ok) {
+              throw new Error(responseData.error || 'فشل عملية الاستعادة.');
+            }
+
+            restoreStatus.textContent = 'تمت الاستعادة بنجاح! سيتم إعادة تحميل الصفحة.';
+            restoreStatus.style.color = '#34d399';
+            alert('تمت الاستعادة بنجاح! سيتم إعادة تحميل لوحة التحكم الآن.');
+            window.location.reload();
+            
+          } catch (error) {
+            console.error('Restore Error:', error);
+            restoreStatus.textContent = `خطأ: ${error.message}`;
+            restoreStatus.style.color = '#f87171';
+          } finally {
+            restoreButton.disabled = false;
+            restoreButton.style.opacity = '1';
+            restoreButton.style.cursor = 'pointer';
+            (event.target as HTMLInputElement).value = ''; // Reset file input
+          }
+        };
+        reader.onerror = () => {
+          restoreStatus.textContent = 'خطأ في قراءة الملف.';
+          restoreStatus.style.color = '#f87171';
+          restoreButton.disabled = false;
+          restoreButton.style.opacity = '1';
+          restoreButton.style.cursor = 'pointer';
+          (event.target as HTMLInputElement).value = '';
+        };
+        reader.readAsText(file);
+      });
+    };
+
+    const initBackupUI = () => {
+        // Use a persistent interval to ensure the UI is always present,
+        // even if the CMS framework re-renders the sidebar.
+        setInterval(addBackupRestoreUI, 1000);
+    };
+
+    document.addEventListener('DOMContentLoaded', initBackupUI);
   </script>
 </body>
 </html>

@@ -1,7 +1,8 @@
-import React, { ErrorInfo, ReactNode } from 'react';
+// Fix: The previous namespace import for React was inconsistent with the project and likely caused type resolution issues. Switched to the standard default import.
+import React from 'react';
 
 interface ErrorBoundaryProps {
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
 interface State {
@@ -9,19 +10,13 @@ interface State {
 }
 
 class ErrorBoundary extends React.Component<ErrorBoundaryProps, State> {
-  // Fix: Reverted to using a constructor for state initialization.
-  // The class property syntax `state = { ... }` was causing a TypeScript error
-  // where `this.props` could not be found within the component.
-  constructor(props: ErrorBoundaryProps) {
-    super(props);
-    this.state = { hasError: false };
-  }
+  state: State = { hasError: false };
 
   static getDerivedStateFromError(_: Error): State {
     return { hasError: true };
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error("Uncaught error:", error, errorInfo);
   }
 
