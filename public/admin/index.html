@@ -158,13 +158,9 @@
             return;
         }
 
-        // 1. Open the dropdown
         downArrow.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
-
-        // 2. Wait for options to render
         await new Promise(resolve => setTimeout(resolve, 150));
 
-        // 3. Find and click the option
         const options = Array.from(document.querySelectorAll('div[class*="-option"]'));
         const targetOption = options.find(opt => opt.textContent.trim() === categoryTitle.trim());
 
@@ -176,7 +172,69 @@
         }
     };
   
-    const addAiPostGeneratorButton = () => {
+    const createAiHelperButton = (text, task, bodyTextarea) => {
+        const button = document.createElement('button');
+        button.textContent = text;
+        button.type = 'button';
+        Object.assign(button.style, {
+            backgroundColor: '#4a5568',
+            color: 'white',
+            border: 'none',
+            padding: '8px 12px',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            fontSize: '14px',
+            transition: 'background-color 0.2s, opacity 0.2s',
+            flex: '1',
+        });
+        
+        button.addEventListener('mouseover', () => { if (!button.disabled) button.style.backgroundColor = '#2d3748'; });
+        button.addEventListener('mouseout', () => { if (!button.disabled) button.style.backgroundColor = '#4a5568'; });
+
+        button.addEventListener('click', async () => {
+            const originalText = button.textContent;
+            button.textContent = '...جاري المعالجة';
+            button.disabled = true;
+            button.style.cursor = 'not-allowed';
+            button.style.opacity = '0.7';
+
+            try {
+                const content = bodyTextarea.value;
+                if (!content.trim() && task !== 'complete') {
+                    alert('لا يوجد محتوى لمعالجته.');
+                    return;
+                }
+
+                const response = await fetch('/.netlify/functions/ai-helper', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content, task }),
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'فشل الطلب');
+                }
+                const data = await response.json();
+                
+                const nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value').set;
+                nativeSetter.call(bodyTextarea, data.result);
+                bodyTextarea.dispatchEvent(new Event('input', { bubbles: true }));
+
+            } catch (error) {
+                console.error('AI Helper Error:', error);
+                alert(`حدث خطأ: ${error.message}`);
+            } finally {
+                button.textContent = originalText;
+                button.disabled = false;
+                button.style.cursor = 'pointer';
+                button.style.opacity = '1';
+            }
+        });
+        return button;
+    };
+    
+    const addAllAiButtons = () => {
         const bodyTextarea = document.querySelector('textarea[id^="body-"]');
         if (!bodyTextarea || document.getElementById('ai-post-generator-button')) {
             return;
@@ -184,51 +242,35 @@
         const container = bodyTextarea.parentElement;
         if (!container) return;
 
-        const button = document.createElement('button');
-        button.id = 'ai-post-generator-button';
-        button.innerHTML = '✨ إنشاء منشور كامل بالذكاء الاصطناعي';
-        button.type = 'button';
-        Object.assign(button.style, {
-            backgroundColor: '#ef4444',
-            color: 'white',
-            border: 'none',
-            padding: '10px 15px',
-            borderRadius: '5px',
-            cursor: 'pointer',
-            fontSize: '14px',
-            fontWeight: 'bold',
-            width: '100%',
-            marginBottom: '15px',
-            transition: 'background-color 0.2s, opacity 0.2s'
+        // --- 1. "Generate Full Post" Button ---
+        const generateButton = document.createElement('button');
+        generateButton.id = 'ai-post-generator-button';
+        generateButton.innerHTML = '✨ إنشاء منشور كامل بالذكاء الاصطناعي';
+        generateButton.type = 'button';
+        Object.assign(generateButton.style, {
+            backgroundColor: '#ef4444', color: 'white', border: 'none', padding: '10px 15px',
+            borderRadius: '5px', cursor: 'pointer', fontSize: '14px', fontWeight: 'bold',
+            width: '100%', marginBottom: '15px', transition: 'background-color 0.2s, opacity 0.2s'
         });
 
-        button.addEventListener('mouseover', () => {
-          if (!button.disabled) button.style.backgroundColor = '#dc2626';
-        });
-        button.addEventListener('mouseout', () => {
-          if (!button.disabled) button.style.backgroundColor = '#ef4444';
-        });
+        generateButton.addEventListener('mouseover', () => { if (!generateButton.disabled) generateButton.style.backgroundColor = '#dc2626'; });
+        generateButton.addEventListener('mouseout', () => { if (!generateButton.disabled) generateButton.style.backgroundColor = '#ef4444'; });
 
-        button.addEventListener('click', async () => {
-            const titleInput = document.querySelector('input[id^="title-"]');
-            const descriptionTextarea = document.querySelector('textarea[id^="description-"]');
-            const linkInput = document.querySelector('input[id^="link-"]');
-            const youtubeUrlInput = document.querySelector('input[id^="youtubeUrl-"]');
-
-            const title = titleInput ? titleInput.value : '';
-            const description = descriptionTextarea ? descriptionTextarea.value : '';
-            const link = linkInput ? linkInput.value : '';
+        generateButton.addEventListener('click', async () => {
+            const title = document.querySelector('input[id^="title-"]')?.value || '';
+            const description = document.querySelector('textarea[id^="description-"]')?.value || '';
+            const link = document.querySelector('input[id^="link-"]')?.value || '';
 
             if (!title.trim()) {
                 alert('الرجاء إدخال عنوان للمنشور أولاً.');
                 return;
             }
 
-            const originalText = button.innerHTML;
-            button.innerHTML = '...جاري إنشاء المحتوى';
-            button.disabled = true;
-            button.style.cursor = 'not-allowed';
-            button.style.opacity = '0.7';
+            const originalText = generateButton.innerHTML;
+            generateButton.innerHTML = '...جاري إنشاء المحتوى';
+            generateButton.disabled = true;
+            generateButton.style.cursor = 'not-allowed';
+            generateButton.style.opacity = '0.7';
 
             try {
                 const response = await fetch('/.netlify/functions/generate-post', {
@@ -244,274 +286,57 @@
                 const data = await response.json();
 
                 const updateReactInput = (element, value) => {
-                    if (!element) return;
+                    if (!element || value === undefined) return;
                     const nativeSetter = Object.getOwnPropertyDescriptor(element.constructor.prototype, 'value').set;
                     nativeSetter.call(element, value);
-                    const event = new Event('input', { bubbles: true });
-                    element.dispatchEvent(event);
+                    element.dispatchEvent(new Event('input', { bubbles: true }));
                 };
 
-                updateReactInput(descriptionTextarea, data.description || '');
-                updateReactInput(bodyTextarea, data.content || '');
-                updateReactInput(youtubeUrlInput, data.youtubeUrl || '');
+                updateReactInput(document.querySelector('textarea[id^="description-"]'), data.description);
+                updateReactInput(document.querySelector('textarea[id^="body-"]'), data.content);
+                updateReactInput(document.querySelector('input[id^="youtubeUrl-"]'), data.youtubeUrl);
                 if (data.categoryTitle) {
                   selectCmsCategory(data.categoryTitle);
                 }
-
 
             } catch (error) {
                 console.error('AI Post Generator Error:', error);
                 alert(`حدث خطأ: ${error.message}`);
             } finally {
-                button.innerHTML = originalText;
-                button.disabled = false;
-                button.style.cursor = 'pointer';
-                button.style.opacity = '1';
+                generateButton.innerHTML = originalText;
+                generateButton.disabled = false;
+                generateButton.style.cursor = 'pointer';
+                generateButton.style.opacity = '1';
             }
         });
-
-        const existingHelperButtons = document.getElementById('ai-helper-buttons');
-        if (existingHelperButtons) {
-            container.insertBefore(button, existingHelperButtons);
-        } else {
-            container.insertBefore(button, bodyTextarea);
-        }
-    };
-
-    const addAiButtons = () => {
-      addAiPostGeneratorButton(); // Add the new post generator button
-      
-      const bodyTextarea = document.querySelector('textarea[id^="body-"]');
-      if (!bodyTextarea || bodyTextarea.dataset.aiButtonsAdded) {
-        return;
-      }
-      
-      const container = bodyTextarea.parentElement;
-      if (!container) return;
-
-      const buttonContainer = document.createElement('div');
-      buttonContainer.id = 'ai-helper-buttons';
-      buttonContainer.style.display = 'flex';
-      buttonContainer.style.gap = '10px';
-      buttonContainer.style.marginBottom = '10px';
-      
-      const createButton = (text, task) => {
-          const button = document.createElement('button');
-          button.textContent = text;
-          button.style.backgroundColor = '#4a5568';
-          button.style.color = 'white';
-          button.style.border = 'none';
-          button.style.padding = '8px 12px';
-          button.style.borderRadius = '5px';
-          button.style.cursor = 'pointer';
-          button.style.fontSize = '14px';
-          button.type = 'button';
-          
-          button.addEventListener('mouseover', () => {
-            if (!button.disabled) button.style.backgroundColor = '#2d3748';
-          });
-          button.addEventListener('mouseout', () => {
-            if (!button.disabled) button.style.backgroundColor = '#4a5568';
-          });
-
-          button.addEventListener('click', async () => {
-            const originalText = button.textContent;
-            button.textContent = '...جاري المعالجة';
-            button.disabled = true;
-            button.style.cursor = 'not-allowed';
-            button.style.backgroundColor = '#2d3748';
-
-            try {
-              const content = bodyTextarea.value;
-              if (!content.trim() && task !== 'complete') { // Allow complete to run on empty for generating content
-                  alert('لا يوجد محتوى لمعالجته.');
-                  return;
-              }
-
-              const response = await fetch('/.netlify/functions/ai-helper', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ content, task }),
-              });
-
-              if (!response.ok) {
-                  const errorData = await response.json();
-                  throw new Error(errorData.error || 'فشل الطلب');
-              }
-
-              const data = await response.json();
-              
-              const nativeTextareaValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value').set;
-              nativeTextareaValueSetter.call(bodyTextarea, data.result);
-
-              const inputEvent = new Event('input', { bubbles: true });
-              const changeEvent = new Event('change', { bubbles: true });
-              bodyTextarea.dispatchEvent(inputEvent);
-              bodyTextarea.dispatchEvent(changeEvent);
-
-
-            } catch (error) {
-                console.error('AI Helper Error:', error);
-                alert(`حدث خطأ: ${error.message}`);
-            } finally {
-                button.textContent = originalText;
-                button.disabled = false;
-                button.style.cursor = 'pointer';
-                button.style.backgroundColor = '#4a5568';
-            }
-          });
-          return button;
-      };
-
-      const summarizeButton = createButton('تلخيص بالذكاء الاصطناعي', 'summarize');
-      const reorderButton = createButton('ترتيب كنقاط بالذكاء الاصطناعي', 'reorder');
-      const completeButton = createButton('إكمال بالذكاء الاصطناعي', 'complete');
-
-      buttonContainer.appendChild(summarizeButton);
-      buttonContainer.appendChild(reorderButton);
-      buttonContainer.appendChild(completeButton);
-      
-      container.insertBefore(buttonContainer, bodyTextarea);
-      bodyTextarea.dataset.aiButtonsAdded = 'true';
-    };
-
-    const handlePendingPost = () => {
-      const pendingTitle = localStorage.getItem('pending_post_title');
-      if (!pendingTitle || !window.location.hash.includes('/collections/posts/new')) {
-        return;
-      }
-      
-      // Use a timer to wait for the editor to mount
-      const interval = setInterval(() => {
-        const titleInput = document.querySelector('input[id^="title-"]');
-        const generateButton = document.getElementById('ai-post-generator-button');
-
-        if (titleInput && generateButton) {
-          clearInterval(interval);
-          localStorage.removeItem('pending_post_title');
-
-          const updateReactInput = (element, value) => {
-              const nativeSetter = Object.getOwnPropertyDescriptor(element.constructor.prototype, 'value').set;
-              nativeSetter.call(element, value);
-              const event = new Event('input', { bubbles: true });
-              element.dispatchEvent(event);
-          };
-
-          updateReactInput(titleInput, pendingTitle);
-
-          setTimeout(() => {
-            if (!generateButton.disabled) {
-              generateButton.click();
-            }
-          }, 300);
-        }
-      }, 200);
-
-      // Timeout to prevent infinite loop
-      setTimeout(() => clearInterval(interval), 5000);
-    };
-
-    const addAdvancedToolsUI = () => {
-      if (document.getElementById('advanced-tools-container')) {
-        return;
-      }
-      const sidebar = document.querySelector('div[class*="Sidebar-container-"]');
-      if (!sidebar) {
-        return;
-      }
-
-      const container = document.createElement('div');
-      container.id = 'advanced-tools-container';
-      container.style.padding = '10px 15px';
-      container.style.marginTop = '10px';
-      container.style.borderTop = '1px solid #4a5568';
-      
-      const buttonStyle = `display: block; width: 100%; text-align: center; color: white; padding: 10px 12px; border-radius: 5px; cursor: pointer; text-decoration: none; margin-bottom: 10px; font-size: 14px; border: none; font-weight: 500;`;
-      
-      container.innerHTML = `
-        <div id="hot-topics-section">
-          <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 12px; color: #e5e7eb;">أحدث المواضيع بالذكاء الاصطناعي</h3>
-          <div id="hot-topics-ui-container">
-            <button id="fetch-hot-topics-btn" style="${buttonStyle} background-color: #4b5563;" onmouseover="this.style.backgroundColor='#6b7280'" onmouseout="this.style.backgroundColor='#4b5563'">
-              اكتشف مواضيع حسب الفئة
-            </button>
-          </div>
-        </div>
-      `;
-
-      // Insert at the bottom of the sidebar to appear after the collections.
-      sidebar.appendChild(container);
-
-
-      // --- Hot Topics Logic ---
-      const hotTopicsBtn = document.getElementById('fetch-hot-topics-btn');
-      const hotTopicsUiContainer = document.getElementById('hot-topics-ui-container');
-
-      const fetchAndDisplayTopics = async (topic, uiContainer) => {
-        uiContainer.innerHTML = \`<p style="color: #9ca3af; text-align: center;">... جاري البحث عن أفضل 20 موضوعًا</p>\`;
-        try {
-          const response = await fetch('/.netlify/functions/get-hot-topics', {
-            method: 'POST',
-            body: JSON.stringify({ topic }),
-          });
-          const titles = await response.json();
-          if (!response.ok) throw new Error(titles.error || 'فشل جلب المواضيع');
-
-          uiContainer.innerHTML = \`
-            <p style="color: #d1d5db; font-weight: 500; margin-bottom: 8px;">اختر موضوعًا لإنشاء منشور عنه:</p>
-            <ul style="list-style: none; padding: 0; margin: 0; max-height: 250px; overflow-y: auto;">
-              \${titles.map(title => \`<li style="padding: 8px; color: #e5e7eb; cursor: pointer; border-radius: 4px;" onmouseover="this.style.backgroundColor='#4b5563'" onmouseout="this.style.backgroundColor='transparent'" data-title="\${encodeURIComponent(title)}">\${title}</li>\`).join('')}
-            </ul>\`;
-            
-          uiContainer.querySelector('ul').addEventListener('click', (e) => {
-            const target = e.target;
-            if (target.tagName === 'LI') {
-              const title = decodeURIComponent(target.dataset.title);
-              localStorage.setItem('pending_post_title', title);
-              window.location.hash = '/collections/posts/new';
-            }
-          });
-        } catch(e) {
-          uiContainer.innerHTML = \`<p style="color: #f87171;">خطأ: \${e.message}</p>\`;
-        }
-      };
-
-      hotTopicsBtn.addEventListener('click', () => {
-        hotTopicsUiContainer.innerHTML = '';
-        const topics = {
-          "أخبار تقنية": "Latest Technology News",
-          "تطبيقات رياضية": "Trending Sports Apps",
-          "تطبيقات أفلام": "New and Popular Movie Streaming Apps",
-          "ذكاء اصطناعي": "Breakthroughs in Artificial Intelligence"
-        };
         
-        Object.entries(topics).forEach(([label, topic]) => {
-          const btn = document.createElement('button');
-          btn.textContent = label;
-          btn.style.cssText = \`\${buttonStyle} background-color: #4a5568;\`;
-          btn.onmouseover = () => btn.style.backgroundColor = '#6b7280';
-          btn.onmouseout = () => btn.style.backgroundColor = '#4a5568';
-          btn.onclick = () => fetchAndDisplayTopics(topic, hotTopicsUiContainer);
-          hotTopicsUiContainer.appendChild(btn);
+        container.insertBefore(generateButton, bodyTextarea);
+
+        // --- 2. Helper Buttons (Summarize, Reorder, Complete) ---
+        const buttonContainer = document.createElement('div');
+        buttonContainer.id = 'ai-helper-buttons';
+        Object.assign(buttonContainer.style, {
+            display: 'flex', gap: '10px', marginBottom: '10px'
         });
-      });
+
+        const summarizeButton = createAiHelperButton('تلخيص بالذكاء الاصطناعي', 'summarize', bodyTextarea);
+        const reorderButton = createAiHelperButton('ترتيب كنقاط بالذكاء الاصطناعي', 'reorder', bodyTextarea);
+        const completeButton = createAiHelperButton('إكمال بالذكاء الاصطناعي', 'complete', bodyTextarea);
+
+        buttonContainer.appendChild(summarizeButton);
+        buttonContainer.appendChild(reorderButton);
+        buttonContainer.appendChild(completeButton);
+        
+        container.insertBefore(buttonContainer, bodyTextarea);
     };
     
-    const runCmsInjections = () => {
-      addAiButtons();
-      handlePendingPost();
-      addAdvancedToolsUI();
-    };
+    // --- Observer Setup ---
+    const observer = new MutationObserver(addAllAiButtons);
 
-    const observer = new MutationObserver(runCmsInjections);
-
-    // Run once on initial load with a delay as a fallback
     document.addEventListener('DOMContentLoaded', () => {
-      setTimeout(runCmsInjections, 2000);
+      setTimeout(addAllAiButtons, 2000);
     });
     
-    // Observe for SPA navigations and dynamic content loading.
-    // The nc-root element is the root of the Netlify CMS app, which is a better target than document.body.
     window.addEventListener('load', () => {
         const targetNode = document.getElementById('nc-root') || document.body;
         observer.observe(targetNode, {
