@@ -41,7 +41,7 @@ const handler: Handler = async (event) => {
     try {
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash',
-            contents: `Based on the latest news from Google Search, list the top 10 trending and interesting blog post titles in Arabic related to the topic of "${topic}". Your response must be a valid JSON array of strings, where each string is a title. For example: ["عنوان 1", "عنوان 2", ...]. Do not include any other text, formatting, or explanations.`,
+            contents: `Based on the latest news and trending topics from Google Search, list exactly 20 engaging and relevant blog post titles in Arabic related to the topic of "${topic}". The titles should be suitable for a tech blog. Your response must be a valid JSON array of strings, where each string is a title. For example: ["عنوان 1", "عنوان 2", ...]. Do not include any other text, formatting, or explanations.`,
             config: {
                 tools: [{ googleSearch: {} }],
                 responseMimeType: "application/json",

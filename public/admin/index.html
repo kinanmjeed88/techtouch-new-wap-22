@@ -237,10 +237,11 @@
                     body: JSON.stringify({ title, description, link }),
                 });
 
-                const data = await response.json();
                 if (!response.ok) {
-                    throw new Error(data.error || 'فشل الطلب من الخادم.');
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'فشل الطلب من الخادم.');
                 }
+                const data = await response.json();
 
                 const updateReactInput = (element, value) => {
                     if (!element) return;
@@ -421,7 +422,7 @@
     });
   </script>
   
-  <!-- Backup, Restore, and Hot Topics Script -->
+  <!-- Hot Topics Script -->
   <script>
     const addAdvancedToolsUI = () => {
       if (document.getElementById('advanced-tools-container')) {
@@ -441,40 +442,13 @@
       const buttonStyle = `display: block; width: 100%; text-align: center; color: white; padding: 10px 12px; border-radius: 5px; cursor: pointer; text-decoration: none; margin-bottom: 10px; font-size: 14px; border: none; font-weight: 500;`;
       
       container.innerHTML = `
-        <!-- Hot Topics -->
         <div id="hot-topics-section">
-          <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 12px; color: #e5e7eb;">أحدث المواضيع الرائجة</h3>
+          <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 12px; color: #e5e7eb;">أحدث المواضيع بالذكاء الاصطناعي</h3>
           <div id="hot-topics-ui-container">
             <button id="fetch-hot-topics-btn" style="${buttonStyle} background-color: #4b5563;" onmouseover="this.style.backgroundColor='#6b7280'" onmouseout="this.style.backgroundColor='#4b5563'">
-              اختر فئة لجلب المواضيع
+              اكتشف مواضيع حسب الفئة
             </button>
           </div>
-        </div>
-
-        <!-- Backup and Restore -->
-        <div id="backup-restore-section" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #4a5568;">
-          <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 12px; color: #e5e7eb;">النسخ الاحتياطي والاستعادة</h3>
-          <a 
-            href="/.netlify/functions/backup" 
-            download="techtouch0-backup-${new Date().toISOString().split('T')[0]}.json"
-            style="${buttonStyle} background-color: #374151;"
-            onmouseover="this.style.backgroundColor='#4b5563'"
-            onmouseout="this.style.backgroundColor='#374151'"
-          >
-            إنشاء وتنزيل نسخة احتياطية
-          </a>
-          <div style="position: relative;">
-            <input type="file" id="restore-input" accept=".json" style="display: none;">
-            <button 
-              id="restore-button" 
-              style="${buttonStyle} background-color: #dc2626; font-weight: bold;"
-              onmouseover="this.style.backgroundColor='#b91c1c'"
-              onmouseout="this.style.backgroundColor='#dc2626'"
-            >
-              استعادة من ملف
-            </button>
-          </div>
-          <div id="restore-status" style="margin-top: 12px; font-size: 14px; text-align: center; min-height: 20px;"></div>
         </div>
       `;
 
@@ -507,7 +481,7 @@
       });
 
       const fetchAndDisplayTopics = async (topic, uiContainer) => {
-        uiContainer.innerHTML = `<p style="color: #9ca3af; text-align: center;">... جاري البحث عن أفضل 10 مواضيع</p>`;
+        uiContainer.innerHTML = `<p style="color: #9ca3af; text-align: center;">... جاري البحث عن أفضل 20 موضوعًا</p>`;
         try {
           const response = await fetch('/.netlify/functions/get-hot-topics', {
             method: 'POST',
@@ -534,48 +508,6 @@
           uiContainer.innerHTML = `<p style="color: #f87171;">خطأ: ${e.message}</p>`;
         }
       };
-
-      // --- Restore Logic ---
-      const restoreInput = document.getElementById('restore-input');
-      const restoreButton = document.getElementById('restore-button');
-      const restoreStatus = document.getElementById('restore-status');
-      
-      restoreButton.addEventListener('click', () => restoreInput.click());
-      restoreInput.addEventListener('change', (event) => {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        const isConfirmed = confirm('هل أنت متأكد؟ سيتم حذف جميع المنشورات والتصنيفات والإعدادات الحالية واستبدالها بالبيانات من ملف النسخة الاحتياطية. لا يمكن التراجع عن هذا الإجراء.');
-        if (!isConfirmed) {
-          event.target.value = '';
-          return;
-        }
-
-        restoreStatus.textContent = '...جاري الاستعادة، قد يستغرق هذا بعض الوقت';
-        restoreStatus.style.color = '#9ca3af';
-        restoreButton.disabled = true;
-
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-          try {
-            const backupData = JSON.parse(e.target.result);
-            const response = await fetch('/.netlify/functions/restore', {
-              method: 'POST', body: JSON.stringify(backupData)
-            });
-            const responseData = await response.json();
-            if (!response.ok) throw new Error(responseData.error);
-            restoreStatus.textContent = 'تمت الاستعادة بنجاح! سيتم إعادة تحميل الصفحة.';
-            restoreStatus.style.color = '#34d399';
-            alert('تمت الاستعادة بنجاح!');
-            window.location.reload();
-          } catch (error) {
-            restoreStatus.textContent = `خطأ: ${error.message}`;
-            restoreStatus.style.color = '#f87171';
-            restoreButton.disabled = false;
-          }
-        };
-        reader.readAsText(file);
-      });
     };
     
     const initAdvancedToolsUI = () => {
