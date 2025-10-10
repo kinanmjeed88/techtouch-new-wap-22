@@ -448,7 +448,7 @@
       const hotTopicsUiContainer = document.getElementById('hot-topics-ui-container');
 
       const fetchAndDisplayTopics = async (topic, uiContainer) => {
-        uiContainer.innerHTML = `<p style="color: #9ca3af; text-align: center;">... جاري البحث عن أفضل 20 موضوعًا</p>`;
+        uiContainer.innerHTML = \`<p style="color: #9ca3af; text-align: center;">... جاري البحث عن أفضل 20 موضوعًا</p>\`;
         try {
           const response = await fetch('/.netlify/functions/get-hot-topics', {
             method: 'POST',
@@ -457,11 +457,11 @@
           const titles = await response.json();
           if (!response.ok) throw new Error(titles.error || 'فشل جلب المواضيع');
 
-          uiContainer.innerHTML = `
+          uiContainer.innerHTML = \`
             <p style="color: #d1d5db; font-weight: 500; margin-bottom: 8px;">اختر موضوعًا لإنشاء منشور عنه:</p>
             <ul style="list-style: none; padding: 0; margin: 0; max-height: 250px; overflow-y: auto;">
-              ${titles.map(title => `<li style="padding: 8px; color: #e5e7eb; cursor: pointer; border-radius: 4px;" onmouseover="this.style.backgroundColor='#4b5563'" onmouseout="this.style.backgroundColor='transparent'" data-title="${encodeURIComponent(title)}">${title}</li>`).join('')}
-            </ul>`;
+              \${titles.map(title => \`<li style="padding: 8px; color: #e5e7eb; cursor: pointer; border-radius: 4px;" onmouseover="this.style.backgroundColor='#4b5563'" onmouseout="this.style.backgroundColor='transparent'" data-title="\${encodeURIComponent(title)}">\${title}</li>\`).join('')}
+            </ul>\`;
             
           uiContainer.querySelector('ul').addEventListener('click', (e) => {
             const target = e.target;
@@ -472,7 +472,7 @@
             }
           });
         } catch(e) {
-          uiContainer.innerHTML = `<p style="color: #f87171;">خطأ: ${e.message}</p>`;
+          uiContainer.innerHTML = \`<p style="color: #f87171;">خطأ: \${e.message}</p>\`;
         }
       };
 
@@ -488,7 +488,7 @@
         Object.entries(topics).forEach(([label, topic]) => {
           const btn = document.createElement('button');
           btn.textContent = label;
-          btn.style.cssText = `${buttonStyle} background-color: #4a5568;`;
+          btn.style.cssText = \`\${buttonStyle} background-color: #4a5568;\`;
           btn.onmouseover = () => btn.style.backgroundColor = '#6b7280';
           btn.onmouseout = () => btn.style.backgroundColor = '#4a5568';
           btn.onclick = () => fetchAndDisplayTopics(topic, hotTopicsUiContainer);
