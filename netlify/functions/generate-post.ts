@@ -4,7 +4,6 @@ import fs from 'fs/promises';
 import path from 'path';
 import process from 'process';
 
-// --- Helper function to append sources to content ---
 const appendSources = (content: string, response: any): string => {
     const groundingChunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks || [];
     const sources = groundingChunks
@@ -25,8 +24,6 @@ const appendSources = (content: string, response: any): string => {
     return content;
 };
 
-
-// --- Main Handler ---
 const handler: Handler = async (event) => {
     const headers = {
         'Access-Control-Allow-Origin': '*',
@@ -94,15 +91,14 @@ const handler: Handler = async (event) => {
 - You must also select the most appropriate category ID for this post from the following list: [${categoryListForPrompt}].
 - IMPORTANT: Your entire response MUST be a single, valid JSON object and nothing else. Do not wrap it in markdown code fences or add any explanations. The JSON object must have four keys: "description" (a concise and engaging summary of the post, 2-3 sentences), "content" (string, the full post body), "youtubeUrl" (string), and "category" (string).`;
 
-    // --- STRATEGY 1: Attempt with guaranteed JSON mode (Best) ---
     try {
         console.log("Attempting AI generation with JSON mode...");
         const response = await ai.models.generateContent({
-            model: 'gemini-1.5-flash', // Using 1.5 Flash as it has better JSON mode support
+            model: 'gemini-pro', // CHANGED to a stable model
             contents: userPrompt,
             config: {
                 systemInstruction,
-                responseMimeType: "application/json", // Force JSON output
+                responseMimeType: "application/json",
                 tools: [{ googleSearch: {} }],
             }
         });
@@ -122,11 +118,10 @@ const handler: Handler = async (event) => {
     } catch (jsonModeError) {
         console.warn("JSON mode failed. Reason:", jsonModeError, "Falling back to manual parsing mode.");
 
-        // --- STRATEGY 2: Fallback to manual parsing (Old method) ---
         try {
             console.log("Attempting AI generation with manual parsing mode...");
             const response = await ai.models.generateContent({
-                model: 'gemini-1.5-flash',
+                model: 'gemini-pro', // CHANGED to a stable model
                 contents: userPrompt,
                 config: {
                     systemInstruction,
