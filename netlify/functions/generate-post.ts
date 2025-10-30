@@ -67,18 +67,16 @@ const handler: Handler = async (event) => {
     const systemInstruction = `You are an expert content creator for a tech blog. Your task is to generate a complete blog post based on a given topic.
 - The content must be concise, accurate, useful, and written in Arabic.
 - It must be well-structured using Markdown for formatting (e.g., '##' for headings, '-' for bullet points).
-- You must find a relevant, working, publicly accessible YouTube video link. Do not link to private or unavailable videos.
+- You must try to find a relevant, working, publicly accessible YouTube video link.
 - You must also select the most appropriate category ID for this post from the following list: [${categoryListForPrompt}].
 - IMPORTANT: Your entire response MUST be a single, valid JSON object and nothing else. Do not wrap it in markdown code fences or add any explanations. The JSON object must have four keys: "description" (a concise and engaging summary of the post, 2-3 sentences), "content" (string, the full post body), "youtubeUrl" (string), and "category" (string).`;
 
     try {
-        console.log("Attempting AI generation (no search tool)...");
         const response = await ai.models.generateContent({
-            model: 'gemini-pro', // Using the stable gemini-pro model
+            model: 'gemini-pro',
             contents: userPrompt,
             config: {
                 systemInstruction,
-                // REMOVED: tools: [{ googleSearch: {} }]
             }
         });
 
@@ -90,6 +88,7 @@ const handler: Handler = async (event) => {
         const jsonMatch = jsonString.match(/\{[\s\S]*\}/);
 
         if (!jsonMatch || !jsonMatch[0]) {
+            console.error("Failed to extract JSON from AI response:", response.text);
             throw new Error("AI did not return a valid JSON object structure.");
         }
 
@@ -106,11 +105,10 @@ const handler: Handler = async (event) => {
         };
     } catch (error) {
         console.error('Error in generate-post function:', error);
-        const errorMessage = error instanceof Error ? error.message : 'فشل إنشاء المحتوى.';
-        let finalError = `فشل إنشاء المحتوى بالذكاء الاصطناعي: ${errorMessage}`;
+        let finalError = `فشل إنشاء المحتوى: ${error instanceof Error ? error.message : 'خطأ غير معروف'}`;
 
         if (error instanceof SyntaxError) {
-            finalError = `فشل تحليل استجابة الذكاء الاصطناعي.`;
+            finalError = `فشل تحليل استجابة الذكاء الاصطناعي. النموذج لم يرجع JSON صالحًا هذه المرة. يرجى المحاولة مرة أخرى.`;
         }
     
         return {
