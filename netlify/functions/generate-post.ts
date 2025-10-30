@@ -2,9 +2,31 @@ import type { Handler } from "@netlify/functions";
 import { GoogleGenAI } from '@google/genai';
 import fs from 'fs/promises';
 import path from 'path';
-// Fix: Import 'process' to provide type definitions for process.cwd()
 import process from 'process';
 
+// --- Helper function to append sources to content ---
+const appendSources = (content: string, response: any): string => {
+    const groundingChunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks || [];
+    const sources = groundingChunks
+        .map((chunk: any) => chunk.web)
+        .filter((web: any) => web && web.uri)
+        .reduce((acc: any[], current: any) => {
+            if (!acc.find(item => item.uri === current.uri)) {
+                acc.push(current);
+            }
+            return acc;
+        }, [])
+        .slice(0, 5)
+        .map((web: any) => `- [${web.title || web.uri}](${web.uri})`);
+
+    if (sources.length > 0) {
+        return `${content}\n\n## المصادر\n${sources.join('\n')}`;
+    }
+    return content;
+};
+
+
+// --- Main Handler ---
 const handler: Handler = async (event) => {
     const headers = {
         'Access-Control-Allow-Origin': '*',
@@ -41,14 +63,15 @@ const handler: Handler = async (event) => {
         return { statusCode: 400, headers, body: JSON.stringify({ error: 'العنوان مطلوب.' }) };
     }
     
-    // 1. Load categories to provide context to the AI
     let categories: { id: string, title: string }[] = [];
     let categoryListForPrompt = 'any relevant category';
     try {
         const categoriesPath = path.join(process.cwd(), 'public/categories.json');
         const categoriesFile = await fs.readFile(categoriesPath, 'utf-8');
         const categoriesData = JSON.parse(categoriesFile);
-        categories = categoriesData.categories || [];
+        if(categoriesData && categoriesData.categories) {
+            categories = categoriesData.categories;
+        }
         if (categories.length > 0) {
             categoryListForPrompt = categories.map(c => `'${c.id}' (${c.title})`).join(', ');
         }
@@ -64,59 +87,31 @@ const handler: Handler = async (event) => {
         Reference Link: ${link || 'غير متوفر.'}
     `;
 
-    try {
-        const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
-            contents: userPrompt,
-            config: {
-                systemInstruction: `You are an expert content creator for a tech blog. Your task is to generate a complete blog post based on a given topic.
+    const systemInstruction = `You are an expert content creator for a tech blog. Your task is to generate a complete blog post based on a given topic.
 - The content must be concise, accurate, useful, and written in Arabic.
 - It must be well-structured using Markdown for formatting (e.g., '##' for headings, '-' for bullet points).
 - You must use Google Search to find up-to-date information and a relevant, working, publicly accessible YouTube video link. Do not link to private or unavailable videos.
 - You must also select the most appropriate category ID for this post from the following list: [${categoryListForPrompt}].
-- IMPORTANT: Your entire response MUST be a single, valid JSON object and nothing else. Do not wrap it in markdown code fences or add any explanations. The JSON object must have four keys: "description" (a concise and engaging summary of the post, 2-3 sentences), "content" (string, the full post body), "youtubeUrl" (string), and "category" (string).`,
+- IMPORTANT: Your entire response MUST be a single, valid JSON object and nothing else. Do not wrap it in markdown code fences or add any explanations. The JSON object must have four keys: "description" (a concise and engaging summary of the post, 2-3 sentences), "content" (string, the full post body), "youtubeUrl" (string), and "category" (string).`;
+
+    // --- STRATEGY 1: Attempt with guaranteed JSON mode (Best) ---
+    try {
+        console.log("Attempting AI generation with JSON mode...");
+        const response = await ai.models.generateContent({
+            model: 'gemini-1.5-flash', // Using 1.5 Flash as it has better JSON mode support
+            contents: userPrompt,
+            config: {
+                systemInstruction,
+                responseMimeType: "application/json", // Force JSON output
                 tools: [{ googleSearch: {} }],
             }
         });
+
+        let parsedResult = JSON.parse(response.text);
+        parsedResult.content = appendSources(parsedResult.content, response);
         
-        if (!response.text) {
-            throw new Error("AI returned an empty response.");
-        }
-
-        let jsonString = response.text.trim();
-        const jsonMatch = jsonString.match(/\{[\s\S]*\}/);
-
-        if (!jsonMatch || !jsonMatch[0]) {
-            console.error("Failed to extract JSON from AI response:", response.text);
-            throw new Error("AI did not return a valid JSON object structure.");
-        }
-
-        jsonString = jsonMatch[0];
-        const parsedResult = JSON.parse(jsonString);
-        
-        // Append sources from grounding metadata
-        const groundingChunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks || [];
-        const sources = groundingChunks
-            .map((chunk: any) => chunk.web)
-            .filter((web: any) => web && web.uri)
-            // de-duplicate sources based on URI
-            .reduce((acc: any[], current: any) => {
-                if (!acc.find(item => item.uri === current.uri)) {
-                    acc.push(current);
-                }
-                return acc;
-            }, [])
-            .slice(0, 5) // Limit to 5 sources
-            .map((web: any) => `- [${web.title || web.uri}](${web.uri})`);
-
-        if (sources.length > 0) {
-            parsedResult.content += `\n\n## المصادر\n${sources.join('\n')}`;
-        }
-        
-        // Find category title to return to frontend for easy UI manipulation
         const selectedCategory = categories.find(c => c.id === parsedResult.category);
         parsedResult.categoryTitle = selectedCategory ? selectedCategory.title : parsedResult.category;
-
 
         return {
             statusCode: 200,
@@ -124,20 +119,60 @@ const handler: Handler = async (event) => {
             body: JSON.stringify(parsedResult),
         };
 
-    } catch (error) {
-        console.error('Error generating post with AI:', error);
-        const errorMessage = error instanceof Error ? error.message : 'فشل إنشاء المحتوى.';
-        let finalError = `فشل إنشاء المحتوى بالذكاء الاصطناعي: ${errorMessage}`;
+    } catch (jsonModeError) {
+        console.warn("JSON mode failed. Reason:", jsonModeError, "Falling back to manual parsing mode.");
 
-        if (error instanceof SyntaxError) {
-            finalError = `فشل تحليل استجابة الذكاء الاصطناعي. تأكد من أن النموذج يعيد JSON صالحًا.`;
+        // --- STRATEGY 2: Fallback to manual parsing (Old method) ---
+        try {
+            console.log("Attempting AI generation with manual parsing mode...");
+            const response = await ai.models.generateContent({
+                model: 'gemini-1.5-flash',
+                contents: userPrompt,
+                config: {
+                    systemInstruction,
+                    tools: [{ googleSearch: {} }],
+                }
+            });
+
+            if (!response.text) {
+                throw new Error("AI returned an empty response in fallback mode.");
+            }
+
+            let jsonString = response.text.trim();
+            const jsonMatch = jsonString.match(/\{[\s\S]*\}/);
+
+            if (!jsonMatch || !jsonMatch[0]) {
+                console.error("Fallback failed: Could not extract JSON from AI response:", response.text);
+                throw new Error("AI did not return a valid JSON object structure in fallback mode.");
+            }
+
+            jsonString = jsonMatch[0];
+            let parsedResult = JSON.parse(jsonString);
+            parsedResult.content = appendSources(parsedResult.content, response);
+
+            const selectedCategory = categories.find(c => c.id === parsedResult.category);
+            parsedResult.categoryTitle = selectedCategory ? selectedCategory.title : parsedResult.category;
+
+            return {
+                statusCode: 200,
+                headers,
+                body: JSON.stringify(parsedResult),
+            };
+        } catch (fallbackError) {
+            console.error('Both JSON mode and fallback mode failed. Final error:', fallbackError);
+            const errorMessage = fallbackError instanceof Error ? fallbackError.message : 'فشل إنشاء المحتوى.';
+            let finalError = `فشل إنشاء المحتوى بالذكاء الاصطناعي: ${errorMessage}`;
+
+            if (fallbackError instanceof SyntaxError) {
+                finalError = `فشل تحليل استجابة الذكاء الاصطناعي في الوضع الاحتياطي.`;
+            }
+        
+            return {
+                statusCode: 500,
+                headers,
+                body: JSON.stringify({ error: finalError }),
+            };
         }
-    
-        return {
-            statusCode: 500,
-            headers,
-            body: JSON.stringify({ error: finalError }),
-        };
     }
 };
 
