@@ -1,5 +1,6 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: kinanmjeed88/techtouch-web-new-
   branch: main
 
 publish_mode: editorial_workflow
