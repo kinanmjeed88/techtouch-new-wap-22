@@ -3,75 +3,167 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>إدارة المحتوى | TechTouch</title>
-  
+  <title>Content Manager</title>
   <!-- Netlify Identity Widget -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  
-  <!-- Netlify Identity Configuration -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Initialize Netlify Identity
-      if (window.netlifyIdentity) {
-        window.netlifyIdentity.init({
-          container: document.body,
-          APIUrl: '',
-          onInit: function(identity) {
-            identity.on('login', function(user) {
-              console.log('User logged in', user)
-            });
-            identity.on('logout', function(user) {
-              console.log('User logged out', user)
-            });
-          }
-        });
-      }
-    });
-  </script>
-
   <style>
     /*
       CSS Rules for making Netlify CMS responsive on small screens.
-      (لا يوجد تغييرات هنا، تم الإبقاء على كل تحسيناتك)
+      Version 3: More aggressive and specific selectors using !important to 
+      ensure these styles override the default CMS styles.
     */
     @media (max-width: 767px) {
-      div[class*="App-main-"] { flex-direction: column !important; height: auto !important; }
-      div[class*="Sidebar-container-"] { position: relative !important; width: 100% !important; height: auto !important; max-height: 40vh !important; overflow-y: auto !important; border-right: none !important; border-bottom: 2px solid #ccc !important; margin-bottom: 15px !important; }
-      div[class*="Collection-root-"], div[class*="Editor-root-"] { padding: 10px !important; width: 100% !important; }
-      div[class*="Collection-main-"] { width: 100% !important; overflow-x: auto !important; -webkit-overflow-scrolling: touch; }
-      table[class*="Table-table-"] { min-width: 600px !important; }
-      div[class*="Collection-top-root-"] { flex-direction: column !important; align-items: stretch !important; gap: 12px !important; padding: 10px !important; }
-      div[class*="Search-input-"] { width: 100% !important; margin: 0 !important; }
-      div[class*="Collection-top-actions-"] { display: flex !important; flex-direction: column !important; align-items: stretch !important; gap: 10px !important; }
-      div[class*="Collection-top-actions-"] button, a[class*="Button-button-"] { width: 100% !important; justify-content: center !important; margin: 0 !important; }
-      div[class*="Field-root-"] { flex-direction: column !important; align-items: stretch !important; }
-      div[class*="Field-root-"] > label[class*="Label-label-"] { margin-bottom: 8px !important; text-align: right !important; width: 100% !important; }
-      textarea, input[type="text"], input[type="string"], .public-DraftEditor-content { width: 100% !important; }
-      #ai-helper-buttons { flex-direction: column !important; gap: 8px !important; margin-top: 10px !important; }
-      #ai-helper-buttons button { width: 100% !important; justify-content: center !important; }
-      div[class*="Editor-toolbar-"] { padding: 5px !important; flex-wrap: wrap !important; }
-      div[class*="EditorControl-root-"] { padding: 6px !important; }
-      div[class*="Login-logo-"] { display: none !important; }
+      
+      /* Main layout: force vertical stacking */
+      div[class*="App-main-"] {
+        flex-direction: column !important;
+        height: auto !important;
+      }
+
+      /* Sidebar: move to top, make scrollable */
+      div[class*="Sidebar-container-"] {
+        position: relative !important;
+        width: 100% !important;
+        height: auto !important;
+        max-height: 40vh !important; /* Limit height to 40% of viewport */
+        overflow-y: auto !important;
+        border-right: none !important;
+        border-bottom: 2px solid #ccc !important;
+        margin-bottom: 15px !important;
+      }
+
+      /* Content Area: ensure it takes full width */
+      div[class*="Collection-root-"], 
+      div[class*="Editor-root-"] {
+        padding: 10px !important;
+        width: 100% !important;
+      }
+      
+      /* Collection Table: Allow horizontal scrolling */
+      div[class*="Collection-main-"] {
+        width: 100% !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+      }
+      table[class*="Table-table-"] {
+        min-width: 600px !important; /* Force a min-width to trigger scroll */
+      }
+
+      /* Top Bar: stack controls vertically */
+      div[class*="Collection-top-root-"] {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+        padding: 10px !important;
+      }
+
+      div[class*="Search-input-"] {
+        width: 100% !important;
+        margin: 0 !important;
+      }
+
+      div[class*="Collection-top-actions-"] {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 10px !important;
+      }
+      
+      /* Top Bar Buttons: make them full-width */
+      div[class*="Collection-top-actions-"] button,
+      a[class*="Button-button-"] {
+        width: 100% !important;
+        justify-content: center !important;
+        margin: 0 !important;
+      }
+      
+      /* Editor Fields: Stack label on top of input */
+      div[class*="Field-root-"] {
+        flex-direction: column !important;
+        align-items: stretch !important;
+      }
+      
+      div[class*="Field-root-"] > label[class*="Label-label-"] {
+        margin-bottom: 8px !important;
+        text-align: right !important; /* RTL support for labels */
+        width: 100% !important;
+      }
+
+      /* Ensure form elements are full-width */
+      textarea, input[type="text"], input[type="string"], .public-DraftEditor-content {
+        width: 100% !important;
+      }
+
+      /* AI Helper Buttons in CMS: Stack vertically */
+      #ai-helper-buttons {
+        flex-direction: column !important;
+        gap: 8px !important;
+        margin-top: 10px !important;
+      }
+      #ai-helper-buttons button {
+        width: 100% !important;
+        justify-content: center !important;
+      }
+
+      /* Editor Toolbar: Improve spacing on mobile */
+      div[class*="Editor-toolbar-"] {
+          padding: 5px !important;
+          flex-wrap: wrap !important; /* Allow toolbar buttons to wrap */
+      }
+      
+      div[class*="EditorControl-root-"] {
+          padding: 6px !important;
+      }
+
+      /* Hide login page illustration on small screens */
+      div[class*="Login-logo-"] {
+        display: none !important;
+      }
     }
   </style>
 </head>
 <body>
   <!-- يتضمن سكريبت Netlify CMS -->
   <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
+  <script>
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on("init", user => {
+        if (!user) {
+          window.netlifyIdentity.on("login", () => {
+            document.location.href = "/admin/";
+          });
+        }
+      });
+    }
+  </script>
 
-  <!-- AI Helper Script (تم تعديله لـ Vercel) -->
+  <!-- AI Helper Script -->
   <script>
     const selectCmsCategory = async (categoryTitle) => {
         const categoryWidget = document.querySelector('div[id^="category-"]');
-        if (!categoryWidget) { console.warn('Category widget not found.'); return; }
+        if (!categoryWidget) {
+            console.warn('Category widget not found.');
+            return;
+        }
+
         const control = categoryWidget.querySelector('div[class*="-control"]');
-        if (!control) { console.warn('Category widget control not found.'); return; }
+        if (!control) {
+            console.warn('Category widget control not found.');
+            return;
+        }
+        
         const downArrow = control.querySelector('div[class*="-indicatorContainer"]');
-        if (!downArrow) { console.warn('Category dropdown arrow not found.'); return; }
+        if (!downArrow) {
+            console.warn('Category dropdown arrow not found.');
+            return;
+        }
+
         downArrow.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
         await new Promise(resolve => setTimeout(resolve, 150));
+
         const options = Array.from(document.querySelectorAll('div[class*="-option"]'));
         const targetOption = options.find(opt => opt.textContent.trim() === categoryTitle.trim());
+
         if (targetOption) {
             targetOption.dispatchEvent(new MouseEvent('click', { bubbles: true }));
         } else {
@@ -84,32 +176,51 @@
         const button = document.createElement('button');
         button.textContent = text;
         button.type = 'button';
-        Object.assign(button.style, { backgroundColor: '#4a5568', color: 'white', border: 'none', padding: '8px 12px', borderRadius: '5px', cursor: 'pointer', fontSize: '14px', transition: 'background-color 0.2s, opacity 0.2s', flex: '1' });
+        Object.assign(button.style, {
+            backgroundColor: '#4a5568',
+            color: 'white',
+            border: 'none',
+            padding: '8px 12px',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            fontSize: '14px',
+            transition: 'background-color 0.2s, opacity 0.2s',
+            flex: '1',
+        });
+        
         button.addEventListener('mouseover', () => { if (!button.disabled) button.style.backgroundColor = '#2d3748'; });
         button.addEventListener('mouseout', () => { if (!button.disabled) button.style.backgroundColor = '#4a5568'; });
+
         button.addEventListener('click', async () => {
             const originalText = button.textContent;
             button.textContent = '...جاري المعالجة';
             button.disabled = true;
             button.style.cursor = 'not-allowed';
             button.style.opacity = '0.7';
+
             try {
                 const content = bodyTextarea.value;
                 if (!content.trim() && task !== 'complete') {
                     alert('لا يوجد محتوى لمعالجته.');
                     return;
                 }
-                // Netlify Functions endpoint
+
                 const response = await fetch('/.netlify/functions/ai-helper', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ content, task }),
                 });
-                if (!response.ok) { const errorData = await response.json(); throw new Error(errorData.error || 'فشل الطلب'); }
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'فشل الطلب');
+                }
                 const data = await response.json();
+                
                 const nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value').set;
                 nativeSetter.call(bodyTextarea, data.result);
                 bodyTextarea.dispatchEvent(new Event('input', { bubbles: true }));
+
             } catch (error) {
                 console.error('AI Helper Error:', error);
                 alert(`حدث خطأ: ${error.message}`);
@@ -125,45 +236,69 @@
     
     const addAllAiButtons = () => {
         const bodyTextarea = document.querySelector('textarea[id^="body-"]');
-        if (!bodyTextarea || document.getElementById('ai-post-generator-button')) return;
+        if (!bodyTextarea || document.getElementById('ai-post-generator-button')) {
+            return;
+        }
         const container = bodyTextarea.parentElement;
         if (!container) return;
+
+        // --- 1. "Generate Full Post" Button ---
         const generateButton = document.createElement('button');
         generateButton.id = 'ai-post-generator-button';
         generateButton.innerHTML = '✨ إنشاء منشور كامل بالذكاء الاصطناعي';
         generateButton.type = 'button';
-        Object.assign(generateButton.style, { backgroundColor: '#ef4444', color: 'white', border: 'none', padding: '10px 15px', borderRadius: '5px', cursor: 'pointer', fontSize: '14px', fontWeight: 'bold', width: '100%', marginBottom: '15px', transition: 'background-color 0.2s, opacity 0.2s' });
+        Object.assign(generateButton.style, {
+            backgroundColor: '#ef4444', color: 'white', border: 'none', padding: '10px 15px',
+            borderRadius: '5px', cursor: 'pointer', fontSize: '14px', fontWeight: 'bold',
+            width: '100%', marginBottom: '15px', transition: 'background-color 0.2s, opacity 0.2s'
+        });
+
         generateButton.addEventListener('mouseover', () => { if (!generateButton.disabled) generateButton.style.backgroundColor = '#dc2626'; });
         generateButton.addEventListener('mouseout', () => { if (!generateButton.disabled) generateButton.style.backgroundColor = '#ef4444'; });
+
         generateButton.addEventListener('click', async () => {
             const title = document.querySelector('input[id^="title-"]')?.value || '';
             const description = document.querySelector('textarea[id^="description-"]')?.value || '';
             const link = document.querySelector('input[id^="link-"]')?.value || '';
-            if (!title.trim()) { alert('الرجاء إدخال عنوان للمنشور أولاً.'); return; }
+
+            if (!title.trim()) {
+                alert('الرجاء إدخال عنوان للمنشور أولاً.');
+                return;
+            }
+
             const originalText = generateButton.innerHTML;
             generateButton.innerHTML = '...جاري إنشاء المحتوى';
             generateButton.disabled = true;
             generateButton.style.cursor = 'not-allowed';
             generateButton.style.opacity = '0.7';
+
             try {
-                // Netlify Functions endpoint
                 const response = await fetch('/.netlify/functions/generate-post', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ title, description, link }),
                 });
-                if (!response.ok) { const errorData = await response.json(); throw new Error(errorData.error || 'فشل الطلب من الخادم.'); }
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'فشل الطلب من الخادم.');
+                }
                 const data = await response.json();
+
                 const updateReactInput = (element, value) => {
                     if (!element || value === undefined) return;
                     const nativeSetter = Object.getOwnPropertyDescriptor(element.constructor.prototype, 'value').set;
                     nativeSetter.call(element, value);
                     element.dispatchEvent(new Event('input', { bubbles: true }));
                 };
+
                 updateReactInput(document.querySelector('textarea[id^="description-"]'), data.description);
                 updateReactInput(document.querySelector('textarea[id^="body-"]'), data.content);
                 updateReactInput(document.querySelector('input[id^="youtubeUrl-"]'), data.youtubeUrl);
-                if (data.categoryTitle) { selectCmsCategory(data.categoryTitle); }
+                if (data.categoryTitle) {
+                  selectCmsCategory(data.categoryTitle);
+                }
+
             } catch (error) {
                 console.error('AI Post Generator Error:', error);
                 alert(`حدث خطأ: ${error.message}`);
@@ -174,43 +309,84 @@
                 generateButton.style.opacity = '1';
             }
         });
+        
         container.insertBefore(generateButton, bodyTextarea);
+
+        // --- 2. Helper Buttons (Summarize, Reorder, Complete) ---
         const buttonContainer = document.createElement('div');
         buttonContainer.id = 'ai-helper-buttons';
-        Object.assign(buttonContainer.style, { display: 'flex', gap: '10px', marginBottom: '10px' });
+        Object.assign(buttonContainer.style, {
+            display: 'flex', gap: '10px', marginBottom: '10px'
+        });
+
         const summarizeButton = createAiHelperButton('تلخيص بالذكاء الاصطناعي', 'summarize', bodyTextarea);
         const reorderButton = createAiHelperButton('ترتيب كنقاط بالذكاء الاصطناعي', 'reorder', bodyTextarea);
         const completeButton = createAiHelperButton('إكمال بالذكاء الاصطناعي', 'complete', bodyTextarea);
+
         buttonContainer.appendChild(summarizeButton);
         buttonContainer.appendChild(reorderButton);
         buttonContainer.appendChild(completeButton);
+        
         container.insertBefore(buttonContainer, bodyTextarea);
     };
     
     const addHotTopicsLink = () => {
         if (document.getElementById('hot-topics-link-wrapper')) return;
+
         const sidebarList = document.querySelector('ul[class*="Sidebar-list-"]');
         if (sidebarList) {
             const listItem = document.createElement('li');
             listItem.id = 'hot-topics-link-wrapper';
+            
             const link = document.createElement('a');
             link.href = '/admin/hot-topics.html';
             link.textContent = '💡 إنشاء عناوين رائجة';
             link.target = '_blank';
             link.rel = 'noopener noreferrer';
-            link.style.cssText = `padding: 12px 20px; display: block; border-left: 3px solid transparent; color: rgb(122, 133, 153); font-weight: 600; text-decoration: none; transition: all 150ms ease-in-out 0s;`;
-            link.addEventListener('mouseover', () => { link.style.color = 'rgb(39, 44, 53)'; link.style.backgroundColor = 'rgba(0, 0, 0, 0.05)'; });
-            link.addEventListener('mouseout', () => { link.style.color = 'rgb(122, 133, 153)'; link.style.backgroundColor = 'transparent'; });
+            
+            link.style.cssText = `
+                padding: 12px 20px;
+                display: block;
+                border-left: 3px solid transparent;
+                color: rgb(122, 133, 153);
+                font-weight: 600;
+                text-decoration: none;
+                transition: all 150ms ease-in-out 0s;
+            `;
+            
+            link.addEventListener('mouseover', () => {
+                link.style.color = 'rgb(39, 44, 53)';
+                link.style.backgroundColor = 'rgba(0, 0, 0, 0.05)';
+            });
+            link.addEventListener('mouseout', () => {
+                link.style.color = 'rgb(122, 133, 153)';
+                link.style.backgroundColor = 'transparent';
+            });
+
             listItem.appendChild(link);
             sidebarList.appendChild(listItem);
         }
     };
 
-    const observer = new MutationObserver(() => { addAllAiButtons(); addHotTopicsLink(); });
-    document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { addAllAiButtons(); addHotTopicsLink(); }, 2000); });
+    // --- Observer Setup ---
+    const observer = new MutationObserver(() => {
+        addAllAiButtons();
+        addHotTopicsLink();
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        addAllAiButtons();
+        addHotTopicsLink();
+      }, 2000);
+    });
+    
     window.addEventListener('load', () => {
         const targetNode = document.getElementById('nc-root') || document.body;
-        observer.observe(targetNode, { childList: true, subtree: true });
+        observer.observe(targetNode, {
+            childList: true,
+            subtree: true,
+        });
     });
   </script>
 </body>
